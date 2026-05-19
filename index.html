@@ -1,0 +1,1295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CCNA Port Clock — Web Version</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #1a1c22; color: #e0e6f0; min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 1.25rem 1.5rem 0; width: 100%; }
+
+  h1 { font-size: 22px; font-weight: 800; margin-bottom: 4px; text-align: center; color: #e0e6f0; text-shadow: 0 0 20px rgba(74,158,218,0.4); letter-spacing: 0.02em; }
+  .subtitle { font-size: 13px; color: #6a7f96; text-align: center; margin-bottom: 1rem; line-height: 1.6; max-width: 420px; }
+
+  /* HEADER */
+  .header-area { display: flex; flex-direction: column; align-items: center; width: 100%; margin-bottom: 1rem; }
+
+  /* HERO — clock centred at top */
+  .hero { display: flex; justify-content: center; width: 100%; max-width: 1300px; margin-bottom: 1.25rem; }
+
+  /* PANELS ROW — below clock, two equal columns */
+  .panels-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+    width: 100%;
+    max-width: 1300px;
+  }
+
+  /* QUIZ ROW — full width below panels */
+  .quiz-row { width: 100%; max-width: 1300px; margin-top: 1.25rem; }
+
+  /* COMPACT CONFIDENCE BADGES */
+  .conf-badge { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 600; padding: 3px 8px; border-radius: 20px; cursor: pointer; transition: opacity 0.15s; border: none; background: none; }
+  .conf-badge:hover { opacity: 0.75; }
+  .conf-badge-grid { display: flex; flex-wrap: wrap; gap: 5px; }
+
+  /* BOTTOM LEGEND */
+  .bottom-legend { width: 100%; max-width: 1300px; background: #20232b; border-top: 1px solid #2e3440; margin-top: 1.25rem; padding: 1rem 1.5rem; display: flex; flex-wrap: wrap; gap: 16px; align-items: center; justify-content: center; }
+  .legend-section { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; justify-content: center; }
+  .legend-divider { width: 1px; height: 20px; background: #2e3440; }
+  .left-col { display: flex; flex-direction: column; align-items: center; width: 100%; }
+
+  /* PANEL OVERRIDES */
+  .panels-row .info-panel { max-width: none; width: 100%; min-height: 300px; }
+  .quiz-row .stats-panel { width: 100%; }
+
+  /* TITLE GLOW */
+  h1 { font-size: 22px; font-weight: 800; margin-bottom: 4px; text-align: center; color: #e0e6f0; text-shadow: 0 0 20px rgba(74,158,218,0.4); letter-spacing: 0.02em; }
+
+  /* CONTROL GROUPS */
+  .control-group { display: flex; flex-direction: column; align-items: center; gap: 6px; background: #20232b; border: 1px solid #2e3440; border-radius: 14px; padding: 10px 14px; margin-bottom: 1rem; }
+  .control-group-label { font-size: 10px; font-weight: 600; color: #3a5068; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 2px; }
+
+  /* PREV / NEXT ARROWS */
+  .port-nav { display: flex; align-items: center; gap: 10px; margin-top: 10px; justify-content: center; }
+  .port-nav-btn { background: #252830; border: 1.5px solid #2e3440; border-radius: 20px; color: #6a7f96; font-size: 13px; padding: 5px 14px; cursor: pointer; transition: all 0.15s; }
+  .port-nav-btn:hover { border-color: #4a9eda; color: #4a9eda; }
+  .port-nav-btn:disabled { opacity: 0.2; cursor: default; }
+  .port-nav-label { font-size: 11px; color: #3a5068; min-width: 80px; text-align: center; }
+
+  /* CONFIDENCE PANEL — more prominent */
+  .conf-section-label { font-size: 11px; font-weight: 700; color: #4a6a84; text-transform: uppercase; letter-spacing: 0.08em; margin: 14px 0 8px; display: flex; align-items: center; gap: 6px; }
+  .conf-section-label::after { content: ''; flex: 1; height: 1px; background: #2e3440; }
+  .conf-btns { display: flex; gap: 8px; }
+  .conf-btn { flex: 1; padding: 8px 6px; border-radius: 10px; border: 1.5px solid #2e3440; background: #252830; color: #6a7f96; font-size: 12px; font-weight: 500; cursor: pointer; transition: all 0.15s; text-align: center; line-height: 1.4; }
+  .conf-btn:hover { border-color: #4a9eda; color: #e0e6f0; }
+  .conf-btn.set-confident { border-color: #56B4E9; color: #56B4E9; background: rgba(86,180,233,0.08); }
+  .conf-btn.set-shaky { border-color: #E69F00; color: #E69F00; background: rgba(230,159,0,0.08); }
+  .stats-panel { background: #20232b; border: 1.5px solid #2e3440; border-radius: 16px; padding: 1.25rem; width: 220px; flex-shrink: 0; }
+  .stats-title { font-size: 13px; font-weight: 700; color: #e0e6f0; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid #2e3440; }
+  .stats-empty { font-size: 12px; color: #4a6a84; text-align: center; padding: 1.5rem 0; line-height: 1.8; }
+  .stats-row { display: flex; align-items: center; justify-content: space-between; padding: 7px 0; border-bottom: 1px solid #1e2028; }
+  .stats-row:last-of-type { border-bottom: none; }
+  .stats-port { font-size: 13px; font-weight: 700; }
+  .stats-badges { display: flex; gap: 5px; }
+  .stats-pass { font-size: 11px; font-weight: 600; padding: 2px 7px; border-radius: 20px; background: rgba(86,180,233,0.15); color: #56B4E9; }
+  .stats-fail { font-size: 11px; font-weight: 600; padding: 2px 7px; border-radius: 20px; background: rgba(230,159,0,0.15); color: #E69F00; }
+  .retry-btn { width: 100%; padding: 8px; border-radius: 10px; border: 1.5px solid #E69F00; background: transparent; color: #E69F00; font-size: 12px; font-weight: 600; cursor: pointer; margin-top: 12px; transition: all 0.15s; }
+  .retry-btn:hover { background: rgba(230,159,0,0.15); }
+  .retry-btn:disabled { opacity: 0.3; cursor: default; border-color: #2e3440; color: #4a6a84; }
+  .stats-summary { font-size: 11px; color: #4a6a84; text-align: center; margin-top: 10px; }
+
+  /* MODE BAR */
+  .mode-bar { display: flex; gap: 6px; margin-bottom: 1rem; flex-wrap: wrap; justify-content: center; }
+  .mode-btn { font-size: 12px; padding: 6px 14px; border-radius: 20px; border: 1.5px solid #2e3440; background: #252830; color: #8a9bb0; cursor: pointer; font-weight: 500; transition: all 0.15s; }
+  .mode-btn.active { background: #4a9eda; border-color: #4a9eda; color: white; }
+  .mode-btn.quiz-active { background: #E69F00; border-color: #E69F00; color: #000; }
+
+  /* CLOCK */
+  .clock-face { width: 520px; height: 520px; border-radius: 50%; background: radial-gradient(circle at 40% 35%, #23262e, #1a1c22); border: 2px solid #2e3440; box-shadow: 0 4px 30px rgba(0,0,0,0.4), inset 0 2px 8px rgba(0,0,0,0.3); position: relative; overflow: hidden; }
+
+  /* QUADRANT BACKGROUNDS */
+  .quad-bg { position: absolute; width: 50%; height: 50%; pointer-events: none; }
+  .quad-bg.tr { top:0; right:0; background:rgba(230,159,0,0.07); border-left:1px solid rgba(230,159,0,0.15); border-bottom:1px solid rgba(230,159,0,0.15); }
+  .quad-bg.br { bottom:0; right:0; background:rgba(86,180,233,0.07); border-left:1px solid rgba(86,180,233,0.15); border-top:1px solid rgba(86,180,233,0.15); }
+  .quad-bg.bl { bottom:0; left:0; background:rgba(240,228,66,0.05); border-right:1px solid rgba(240,228,66,0.15); border-top:1px solid rgba(240,228,66,0.15); }
+  .quad-bg.tl { top:0; left:0; background:rgba(136,136,136,0.05); border-right:1px solid rgba(136,136,136,0.15); border-bottom:1px solid rgba(136,136,136,0.15); }
+
+  /* CLOCK HANDS */
+  .hand { position: absolute; bottom: 50%; left: 50%; transform-origin: bottom center; border-radius: 4px; transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1); pointer-events: none; z-index: 6; }
+  .hand-hour { width: 5px; height: 105px; background: #e0e6f0; margin-left: -2.5px; box-shadow: 0 0 8px rgba(255,255,255,0.3); }
+
+  /* CENTER DOT */
+  .clock-center { position: absolute; width: 18px; height: 18px; background: #4a9eda; border-radius: 50%; top: 50%; left: 50%; transform: translate(-50%,-50%); z-index: 10; box-shadow: 0 0 10px rgba(74,158,218,0.6); pointer-events: none; }
+
+  /* OUTER RING MARKERS */
+  .port-marker { position: absolute; transform: translate(-50%, -50%); cursor: pointer; z-index: 5; }
+  .port-inner { width: 66px; height: 66px; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; border: 3px solid transparent; transition: all 0.2s; position: relative; box-shadow: 0 2px 8px rgba(0,0,0,0.12); }
+  .port-inner:hover { transform: scale(1.12); }
+  .port-inner.active { transform: scale(1.15); }
+  .port-num { font-size: 14px; font-weight: 800; line-height: 1; }
+  .port-name { font-size: 8px; font-weight: 500; opacity: 0.75; line-height: 1; margin-top: 3px; text-align: center; }
+
+  /* CONFIDENCE DOT */
+  .conf-dot { position: absolute; top: 2px; right: 2px; width: 8px; height: 8px; border-radius: 50%; border: 1px solid rgba(0,0,0,0.15); background: #d0d8e0; transition: background 0.2s; z-index: 8; }
+  .conf-dot.confident { background: #56B4E9; border-color: #56B4E9; box-shadow: 0 0 4px #56B4E9; }
+  .conf-dot.shaky { background: #E69F00; border-color: #E69F00; box-shadow: 0 0 4px #E69F00; }
+
+  /* CLOCK FLIP CONTAINER */
+  .clock-wrap { position: relative; width: 520px; height: 520px; margin-bottom: 1.25rem; flex-shrink: 0; }
+  .clock-flip { width: 520px; height: 520px; position: relative; transform-style: preserve-3d; perspective: 1200px; transition: transform 0.7s cubic-bezier(0.4,0.2,0.2,1); }
+  .clock-flip.flipped { transform: rotateY(180deg); }
+  .clock-flip-front, .clock-flip-back { position: absolute; width: 520px; height: 520px; backface-visibility: hidden; border-radius: 50%; }
+  .clock-flip-front { transform: rotateY(0deg); }
+  .clock-flip-back { transform: rotateY(180deg); }
+
+  /* QUIZ FACE */
+  .quiz-face { width: 520px; height: 520px; border-radius: 50%; background: radial-gradient(circle at 40% 35%, #23262e, #1a1c22); border: 2px solid #2e3440; box-shadow: 0 4px 30px rgba(0,0,0,0.4); display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2.5rem; text-align: center; overflow: hidden; }
+  .qf-title { font-size: 16px; font-weight: 700; color: #e0e6f0; margin-bottom: 1.25rem; }
+  .qf-row { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; width: 100%; justify-content: center; }
+  .qf-label { font-size: 12px; color: #6a7f96; min-width: 85px; text-align: right; }
+  .qf-slider { width: 110px; accent-color: #4a9eda; cursor: pointer; }
+  .qf-val { font-size: 12px; font-weight: 700; color: #4a9eda; min-width: 36px; text-align: left; }
+  .qf-start { padding: 10px 28px; border-radius: 20px; background: #4a9eda; border: none; color: white; font-size: 14px; font-weight: 700; cursor: pointer; margin-top: 8px; transition: background 0.15s; }
+  .qf-start:hover { background: #3a8eca; }
+  .qf-prompt { font-size: 22px; font-weight: 700; color: #e0e6f0; margin-bottom: 6px; line-height: 1.3; }
+  .qf-sub { font-size: 12px; color: #6a7f96; margin-bottom: 10px; }
+  .qf-counter { font-size: 11px; color: #4a6a84; margin-bottom: 8px; }
+  .qf-timer-wrap { width: 200px; height: 5px; background: #2e3440; border-radius: 5px; margin-bottom: 12px; overflow: hidden; }
+  .qf-timer-bar { height: 5px; border-radius: 5px; background: #4a9eda; transition: width 0.1s linear, background 0.3s; }
+  .qf-input { width: 160px; background: #1a1c22; border: 1.5px solid #2e3440; border-radius: 10px; padding: 10px; font-size: 20px; font-weight: 700; color: #e0e6f0; text-align: center; outline: none; margin-bottom: 8px; }
+  .qf-input:focus { border-color: #4a9eda; }
+  .qf-feedback { font-size: 14px; font-weight: 600; min-height: 20px; margin-bottom: 8px; }
+  .qf-feedback.correct { color: #56B4E9; }
+  .qf-feedback.wrong { color: #E69F00; }
+  .qf-submit { padding: 8px 22px; border-radius: 20px; background: #4a9eda; border: none; color: white; font-size: 13px; font-weight: 600; cursor: pointer; }
+  .qf-end { padding: 5px 14px; border-radius: 20px; background: transparent; border: 1.5px solid #2e3440; color: #6a7f96; font-size: 11px; cursor: pointer; margin-top: 8px; display: block; }
+  .qf-end:hover { border-color: #E69F00; color: #E69F00; }
+  .qf-big-score { font-size: 52px; font-weight: 800; color: #56B4E9; line-height: 1; margin-bottom: 6px; }
+  .qf-result-msg { font-size: 13px; color: #6a7f96; margin-bottom: 16px; line-height: 1.5; }
+  .qf-btn-row { display: flex; gap: 8px; justify-content: center; }
+
+  /* FLIP CARD (port circles) */
+  .flip-wrap { width: 66px; height: 66px; perspective: 600px; }
+  .flip-inner { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; transition: transform 0.5s; }
+  .flip-inner.flipped { transform: rotateY(180deg); }
+  .flip-front, .flip-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; border: 3px solid transparent; }
+  .flip-back { transform: rotateY(180deg); background: #252830; }
+  .flip-front-name { font-size: 10px; font-weight: 700; text-align: center; line-height: 1.2; padding: 0 4px; }
+  .flip-back-num { font-size: 15px; font-weight: 800; line-height: 1; }
+  .flip-back-name { font-size: 8px; font-weight: 500; margin-top: 3px; text-align: center; opacity: 0.75; }
+
+  /* RING GUIDE */
+  .ring-guide { position: absolute; border-radius: 50%; border: 1px dashed rgba(0,0,0,0.08); top: 50%; left: 50%; transform: translate(-50%,-50%); pointer-events: none; }
+
+  /* QUAD ICONS */
+  .quad-icon { position: absolute; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 56px; height: 56px; border-radius: 50%; cursor: pointer; transition: all 0.2s; border: 3px solid transparent; box-shadow: 0 2px 8px rgba(0,0,0,0.12); }
+  .quad-icon:hover { transform: translate(-50%,-50%) scale(1.12) !important; }
+  .quad-icon.active { transform: translate(-50%,-50%) scale(1.15) !important; }
+  .quad-icon .q-emoji { font-size: 17px; line-height: 1; }
+  .quad-icon .q-port { font-size: 12px; font-weight: 800; line-height: 1; }
+  .quad-icon .q-name { font-size: 8px; font-weight: 500; opacity: 0.75; line-height: 1; margin-top: 3px; text-align: center; }
+
+  /* INFO PANEL */
+  .info-panel { width: 100%; max-width: 380px; background: #20232b; border: 1.5px solid #2e3440; border-radius: 16px; padding: 1.25rem; min-height: 180px; box-shadow: 0 2px 12px rgba(0,0,0,0.3); }
+  .panel-empty { color: #4a6a84; font-size: 13px; text-align: center; padding: 2rem 0; line-height: 2.2; }
+  .panel-header { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+  .panel-icon { font-size: 26px; flex-shrink: 0; display: none; }
+  .panel-title { font-size: 17px; font-weight: 700; color: #e0e6f0; }
+  .panel-port { font-size: 12px; font-weight: 700; padding: 3px 10px; border-radius: 20px; margin-left: auto; white-space: nowrap; }
+  .panel-proto { font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 20px; margin-top: 3px; display: inline-block; }
+  .panel-section { font-size: 10px; font-weight: 700; color: #4a6a84; text-transform: uppercase; letter-spacing: 0.08em; margin: 10px 0 5px; }
+  .panel-scene { font-size: 13px; color: #8a9bb0; line-height: 1.7; border-left: 2px solid #2e3440; padding-left: 10px; }
+  .panel-scene strong { color: #c8dff0; }
+  .panel-trap { background: #1a1510; border-radius: 10px; padding: 10px 12px; font-size: 12px; color: #b89060; line-height: 1.6; margin-top: 8px; border: 1px solid #3a2a18; }
+  .panel-trap strong { color: #E69F00; }
+  .ring-tag { font-size: 10px; padding: 2px 8px; border-radius: 20px; font-weight: 600; display: inline-block; margin-bottom: 8px; }
+  .conf-btns { display: flex; gap: 8px; margin-top: 12px; }
+  .conf-btn { flex: 1; padding: 7px; border-radius: 10px; border: 1.5px solid #2e3440; background: #252830; color: #6a7f96; font-size: 12px; font-weight: 500; cursor: pointer; transition: all 0.15s; }
+  .conf-btn:hover { border-color: #4a9eda; color: #e0e6f0; }
+  .conf-btn.set-confident { border-color: #56B4E9; color: #56B4E9; }
+  .conf-btn.set-shaky { border-color: #E69F00; color: #E69F00; }
+
+  /* ALL PORTS OVERLAY */
+  #allPortsOverlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 200; align-items: center; justify-content: center; padding: 2rem; }
+  #allPortsOverlay.show { display: flex; }
+  /* ALL PORTS */
+  .allports-card { background: #20232b; border: 1.5px solid #2e3440; border-radius: 20px; padding: 1.5rem; max-width: 560px; width: 100%; max-height: 85vh; overflow-y: auto; box-shadow: 0 4px 24px rgba(0,0,0,0.4); }
+  .ports-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .ports-table th { text-align: left; font-size: 10px; font-weight: 700; color: #4a6a84; text-transform: uppercase; letter-spacing: 0.06em; padding: 6px 10px; border-bottom: 1px solid #2e3440; }
+  .ports-table td { padding: 10px 10px; border-bottom: 1px solid #1e2028; color: #c8d8e8; vertical-align: middle; }
+  .ports-table tr:last-child td { border-bottom: none; }
+  .ports-table tr:hover td { background: #252830; }
+  .port-num-cell { font-size: 15px; font-weight: 800; }
+  .proto-cell { font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 20px; display: inline-block; }
+  .cat-cell { font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 20px; display: inline-block; }
+  .table-group-label { font-size: 12px; font-weight: 700; padding: 6px 12px; border-radius: 8px; border: 1px solid; margin-bottom: 8px; display: block; }
+  .row-num { color: #3a5068; font-size: 11px; font-weight: 500; }
+  .legend { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-top: 0.75rem; max-width: 380px; }
+  .legend-item { display: flex; align-items: center; gap: 4px; font-size: 10px; color: #4a6a84; }
+  .legend-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+
+  /* CATEGORY LEGEND */
+  .cat-legend { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-top: 6px; max-width: 380px; }
+  .cat-item { display: flex; align-items: center; gap: 4px; font-size: 10px; color: #4a6a84; }
+  .cat-dot { width: 8px; height: 8px; border-radius: 2px; flex-shrink: 0; }
+
+  /* IDLE HAND ANIMATION */
+  @keyframes idleSweep { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+  .hand-hour.idle { animation: idleSweep 60s linear infinite; }
+
+  /* WEB VERSION OVERRIDES */
+  .main-layout .info-panel { max-width: none; width: 100%; min-height: 520px; }
+  body.quiz-mode .bottom-legend,
+  body.quiz-mode #allPortsOverlay,
+  body.quiz-mode #custom-clock-bar,
+  body.quiz-mode .panels-row,
+  body.quiz-mode .quiz-row { display: none !important; }
+</style>
+</head>
+<body>
+
+<h1>⏰ CCNA Port Clock</h1>
+<p class="subtitle">Tap any port · Clock hands follow your selection · Track confidence · Test yourself with timed quiz</p>
+
+<!-- HEADER CONTROLS -->
+<div class="header-area">
+  <div style="display:flex;gap:1.5rem;align-items:center;flex-wrap:wrap;justify-content:center;margin-bottom:0.75rem;">
+    <div class="control-group" style="margin-bottom:0;">
+      <span class="control-group-label">Clock mode</span>
+      <div class="mode-bar" style="margin-bottom:0;">
+        <button class="mode-btn" id="btn-ccna-clock" onclick="setClockMode('ccna')">🎓 CCNA Clock</button>
+        <button class="mode-btn" id="btn-custom-clock" onclick="setClockMode('custom')">⚙️ Custom Clock</button>
+      </div>
+    </div>
+    <div class="control-group" style="margin-bottom:0;">
+      <span class="control-group-label">Study mode</span>
+      <div class="mode-bar" style="margin-bottom:0;">
+        <button class="mode-btn active" id="btn-flip" onclick="setMode('flip')">🃏 Flip</button>
+        <button class="mode-btn" id="btn-quiz" onclick="toggleQuizMode()">⏱ Quiz</button>
+        <button class="mode-btn" id="btn-allports" onclick="toggleAllPorts()" style="display:none;">📋 Edit Clock</button>
+      </div>
+    </div>
+  </div>
+  <div id="custom-clock-bar" style="display:none;align-items:center;gap:12px;">
+    <span id="port-count-badge" style="font-size:12px;color:#6a7f96;">0 / 12 positions filled</span>
+    <button onclick="resetCustomClock()" style="font-size:11px;padding:4px 12px;border-radius:20px;border:1.5px solid #2e3440;background:transparent;color:#6a7f96;cursor:pointer;" onmouseover="this.style.borderColor='#E69F00';this.style.color='#E69F00'" onmouseout="this.style.borderColor='#2e3440';this.style.color='#6a7f96'">↺ Reset</button>
+  </div>
+</div>
+
+<!-- HERO: Clock centred at top -->
+<div class="hero">
+  <div class="clock-wrap">
+    <div class="clock-flip" id="clockFlip">
+      <div class="clock-flip-front">
+        <div class="clock-face" id="clockFace">
+          <div class="quad-bg tr"></div>
+          <div class="quad-bg br"></div>
+          <div class="quad-bg bl"></div>
+          <div class="quad-bg tl"></div>
+          <div class="hand hand-hour" id="handHour" style="transform:rotate(0deg)"></div>
+          <div class="clock-center"></div>
+        </div>
+      </div>
+      <div class="clock-flip-back">
+        <div class="quiz-face" id="quizFace"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PANELS ROW: Confidence left, Info right -->
+<div class="panels-row">
+
+  <!-- LEFT: Confidence Tracker -->
+  <div id="confTracker" style="background:#20232b;border:1.5px solid #2e3440;border-radius:16px;padding:1.25rem;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+      <p style="font-size:13px;font-weight:700;color:#e0e6f0;">📈 Confidence Tracker</p>
+      <span id="confProgressLabel" style="font-size:11px;color:#4a6a84;">0% ready</span>
+    </div>
+    <div style="width:100%;height:6px;background:#1a1c22;border-radius:6px;overflow:hidden;margin-bottom:14px;">
+      <div id="confProgressBar" style="height:100%;width:0%;background:linear-gradient(90deg,#E69F00,#56B4E9);border-radius:6px;transition:width 0.4s;"></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;">
+      <div>
+        <p style="font-size:10px;font-weight:700;color:#56B4E9;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;padding-bottom:4px;border-bottom:1px solid rgba(86,180,233,0.2);">✓ Confident</p>
+        <div id="confListConfident" style="display:flex;flex-direction:column;gap:3px;"></div>
+      </div>
+      <div>
+        <p style="font-size:10px;font-weight:700;color:#E69F00;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;padding-bottom:4px;border-bottom:1px solid rgba(230,159,0,0.2);">~ Shaky</p>
+        <div id="confListShaky" style="display:flex;flex-direction:column;gap:3px;"></div>
+      </div>
+      <div>
+        <p style="font-size:10px;font-weight:700;color:#3a5068;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;padding-bottom:4px;border-bottom:1px solid #2e3440;">● Not reviewed</p>
+        <div id="confListUnreviewed" style="display:flex;flex-direction:column;gap:3px;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT: Info Panel -->
+  <div class="info-panel" id="infoPanel">
+    <p class="panel-empty">
+      👆 Tap any port on the clock to see details<br><br>
+      <span style="font-size:11px;color:#3a5068;line-height:2;">
+        After tapping, use the <strong style="color:#56B4E9;">Confident</strong> / <strong style="color:#E69F00;">Shaky</strong> buttons<br>
+        to track your progress — a small dot appears on each port circle<br>
+        <span style="color:#56B4E9;">⬤</span> Confident &nbsp;
+        <span style="color:#E69F00;">⬤</span> Shaky &nbsp;
+        <span style="color:#2a3f54;">⬤</span> Not reviewed
+      </span>
+    </p>
+  </div>
+
+</div>
+
+<!-- QUIZ RESULTS: full width below panels -->
+<div class="quiz-row">
+  <div class="stats-panel" id="statsPanel" style="width:100%;">
+    <p class="stats-title">📊 Quiz Results</p>
+    <p class="stats-empty" id="statsEmpty">Run a quiz to see your results here</p>
+    <div id="statsRows"></div>
+    <p class="stats-summary" id="statsSummary" style="display:none;"></p>
+    <button class="retry-btn" id="retryFailBtn" style="display:none;" onclick="retryFailed()">↺ Retry failed ports</button>
+  </div>
+</div>
+
+<!-- BOTTOM LEGEND — full width -->
+<div class="bottom-legend">
+  <div class="legend-section">
+    <span style="font-size:10px;font-weight:700;color:#3a5068;text-transform:uppercase;letter-spacing:0.06em;">Protocol</span>
+    <div style="display:flex;gap:10px;align-items:center;">
+      <div style="display:flex;align-items:center;gap:4px;font-size:11px;color:#4a6a84;"><div style="width:8px;height:8px;border-radius:50%;background:#4a9eda;"></div>TCP</div>
+      <div style="display:flex;align-items:center;gap:4px;font-size:11px;color:#4a6a84;"><div style="width:8px;height:8px;border-radius:50%;background:#4adaaa;"></div>UDP</div>
+      <div style="display:flex;align-items:center;gap:4px;font-size:11px;color:#4a6a84;"><div style="width:8px;height:8px;border-radius:50%;background:#dada4a;"></div>Both</div>
+    </div>
+  </div>
+  <div class="legend-divider"></div>
+  <div class="legend-section">
+    <span style="font-size:10px;font-weight:700;color:#3a5068;text-transform:uppercase;letter-spacing:0.06em;">Category</span>
+    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:center;">
+      <div style="display:flex;align-items:center;gap:4px;font-size:11px;color:#4a6a84;"><div style="width:8px;height:8px;border-radius:2px;background:#7c3aed;"></div>Remote access</div>
+      <div style="display:flex;align-items:center;gap:4px;font-size:11px;color:#4a6a84;"><div style="width:8px;height:8px;border-radius:2px;background:#ea580c;"></div>File transfer</div>
+      <div style="display:flex;align-items:center;gap:4px;font-size:11px;color:#4a6a84;"><div style="width:8px;height:8px;border-radius:2px;background:#0891b2;"></div>Email</div>
+      <div style="display:flex;align-items:center;gap:4px;font-size:11px;color:#4a6a84;"><div style="width:8px;height:8px;border-radius:2px;background:#2563eb;"></div>Web</div>
+      <div style="display:flex;align-items:center;gap:4px;font-size:11px;color:#4a6a84;"><div style="width:8px;height:8px;border-radius:2px;background:#d97706;"></div>Net services</div>
+      <div style="display:flex;align-items:center;gap:4px;font-size:11px;color:#4a6a84;"><div style="width:8px;height:8px;border-radius:2px;background:#db2777;"></div>Management</div>
+      <div style="display:flex;align-items:center;gap:4px;font-size:11px;color:#4a6a84;"><div style="width:8px;height:8px;border-radius:2px;background:#059669;"></div>Database / Routing / VoIP</div>
+      <div style="display:flex;align-items:center;gap:4px;font-size:11px;color:#4a6a84;"><div style="width:8px;height:8px;border-radius:2px;background:#ffffff;"></div>Inner quadrant ports</div>
+    </div>
+  </div>
+  <div class="legend-divider"></div>
+  <div class="legend-section">
+    <span style="font-size:10px;font-weight:700;color:#3a5068;text-transform:uppercase;letter-spacing:0.06em;">Confidence</span>
+    <div style="display:flex;gap:10px;align-items:center;">
+      <div style="display:flex;align-items:center;gap:4px;font-size:11px;color:#56B4E9;"><div style="width:8px;height:8px;border-radius:50%;background:#56B4E9;"></div>Confident</div>
+      <div style="display:flex;align-items:center;gap:4px;font-size:11px;color:#E69F00;"><div style="width:8px;height:8px;border-radius:50%;background:#E69F00;"></div>Shaky</div>
+      <div style="display:flex;align-items:center;gap:4px;font-size:11px;color:#3a5068;"><div style="width:8px;height:8px;border-radius:50%;background:#2a3540;border:1px solid #3a5068;"></div>Not reviewed</div>
+    </div>
+  </div>
+</div>
+
+<!-- ALL PORTS OVERLAY -->
+<div class="quiz-overlay" id="allPortsOverlay">
+  <div class="allports-card">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.5rem;">
+      <h2 style="font-size:16px;font-weight:700;color:#e0e6f0;">All Ports Reference</h2>
+      <button onclick="toggleAllPorts()" style="background:#2e3440;border:none;color:#8a9bb0;font-size:13px;padding:6px 14px;border-radius:20px;cursor:pointer;">✕ Close</button>
+    </div>
+    <p style="font-size:12px;color:#4a6a84;margin-bottom:1.25rem;">Tick a port and choose a clock position to add it to the clock face. Positions already in use will show a warning.</p>
+
+    <p class="table-group-label" style="background:rgba(74,158,218,0.1);color:#4a9eda;border-color:rgba(74,158,218,0.3);">⭐ CCNA Exam Ports — 21 ports</p>
+    <table class="ports-table">
+      <thead><tr><th></th><th>Port</th><th>Name</th><th>TCP/UDP</th><th>Category</th><th>Clock position</th></tr></thead>
+      <tbody id="ccnaPortsBody"></tbody>
+    </table>
+
+    <p class="table-group-label" style="background:rgba(136,136,136,0.1);color:#8a9bb0;border-color:rgba(136,136,136,0.3);margin-top:1.5rem;">🌐 Common Ports — general reference</p>
+    <table class="ports-table">
+      <thead><tr><th></th><th>Port</th><th>Name</th><th>TCP/UDP</th><th>Category</th><th>Clock position</th></tr></thead>
+      <tbody id="commonPortsBody"></tbody>
+    </table>
+
+    <div style="margin-top:1.5rem;padding-top:1rem;border-top:1px solid #2e3440;">
+      <p style="font-size:10px;font-weight:700;color:#4a6a84;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px;">Colour legend</p>
+      <div style="display:flex;flex-wrap:wrap;gap:8px;">
+        <span style="font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;background:rgba(124,58,237,0.15);color:#a78bfa;">● Remote Access</span>
+        <span style="font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;background:rgba(234,88,12,0.15);color:#fb923c;">● File Transfer</span>
+        <span style="font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;background:rgba(8,145,178,0.15);color:#22d3ee;">● Email</span>
+        <span style="font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;background:rgba(37,99,235,0.15);color:#60a5fa;">● Web</span>
+        <span style="font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;background:rgba(217,119,6,0.15);color:#fbbf24;">● Net Services / AAA</span>
+        <span style="font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;background:rgba(219,39,119,0.15);color:#f472b6;">● Management</span>
+        <span style="font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;background:rgba(5,150,105,0.15);color:#34d399;">● Database / Routing / VoIP</span>
+        <span style="font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;background:rgba(107,114,128,0.15);color:#9ca3af;">● Windows / Dev / Other</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// CATEGORY COLOURS (colour blind safe — no red/green)
+const CAT = {
+  remote:   { bg: '#1a1a2e', border: '#7c3aed', num: '#a78bfa' },
+  file:     { bg: '#1a1a2e', border: '#ea580c', num: '#fb923c' },
+  email:    { bg: '#1a1a2e', border: '#0891b2', num: '#22d3ee' },
+  web:      { bg: '#1a1a2e', border: '#2563eb', num: '#60a5fa' },
+  services: { bg: '#1a1a2e', border: '#d97706', num: '#fbbf24' },
+  mgmt:     { bg: '#1a1a2e', border: '#db2777', num: '#f472b6' }
+};
+
+const outerPorts = [
+  { id:"ftp",    hour:12, icon:"📦", name:"FTP",    port:"20/21", proto:"TCP",  protoColor:"#fb923c", cat:"file",
+    scene:"<strong>File Transfer Protocol.</strong> Uses two ports — port <strong>21</strong> handles commands and control, port <strong>20</strong> handles the actual file data transfer. Both must be open for FTP to work fully.",
+    trap:"FTP uses TWO ports. Firewalls often block port 20 causing transfers to fail even when port 21 is open. FTP sends credentials in plain text — use SFTP or FTPS in production." },
+  { id:"ssh",    hour:1,  icon:"🔐", name:"SSH",    port:"22",    proto:"TCP",  protoColor:"#c084fc", cat:"remote",
+    scene:"<strong>Secure Shell.</strong> Encrypted remote access to network devices. Everything sent over SSH is encrypted — passwords, commands, and responses. The standard for secure Cisco device management.",
+    trap:"SSH is encrypted on port 22. Telnet is unencrypted on port 23. Always use SSH. To enable SSH on a Cisco device you need a hostname, domain name, RSA key, and SSH version 2." },
+  { id:"telnet", hour:2,  icon:"🚪", name:"Telnet", port:"23",    proto:"TCP",  protoColor:"#c084fc", cat:"remote",
+    scene:"<strong>Telnet.</strong> Unencrypted remote access to network devices. All data including passwords is transmitted in plain text. Anyone capturing traffic on the network can read everything.",
+    trap:"Never use Telnet in production — replace with SSH. Telnet is port 23, SSH is port 22. One number apart on the clock, worlds apart in security." },
+  { id:"smtp",   hour:3,  icon:"✉️", name:"SMTP",   port:"25",    proto:"TCP",  protoColor:"#34d399", cat:"email",
+    scene:"<strong>Simple Mail Transfer Protocol.</strong> Used to send email between mail servers. When you send an email your mail client uses SMTP to deliver it to the outgoing mail server, which then uses SMTP to deliver to the recipient's mail server.",
+    trap:"SMTP only sends email — it does not receive it. POP3 (110) and IMAP (143) are for receiving. SMTP is server to server delivery only." },
+  { id:"dns",    hour:4,  icon:"📖", name:"DNS",    port:"53",    proto:"Both", protoColor:"#facc15", cat:"services",
+    scene:"<strong>Domain Name System.</strong> Translates human-readable hostnames like google.com into IP addresses that routers can use. Every time you visit a website your device first queries DNS to find the IP address.",
+    trap:"DNS uses BOTH TCP and UDP on port 53. UDP for standard queries (fast, small). TCP for zone transfers between DNS servers (large data). This is a favourite exam question — the answer is both." },
+  { id:"dhcp",   hour:5,  icon:"🏠", name:"DHCP",   port:"67/68", proto:"UDP",  protoColor:"#facc15", cat:"services",
+    scene:"<strong>Dynamic Host Configuration Protocol.</strong> Automatically assigns IP addresses to devices joining the network. Port <strong>67</strong> is the server port — receives client requests. Port <strong>68</strong> is the client port — receives server responses.",
+    trap:"DHCP uses UDP because the client has no IP address yet and cannot establish a TCP connection. Server = 67, Client = 68." },
+  { id:"http",   hour:6,  icon:"🌐", name:"HTTP",   port:"80",    proto:"TCP",  protoColor:"#60a5fa", cat:"web",
+    scene:"<strong>HyperText Transfer Protocol.</strong> The foundation of web browsing. All data transferred over HTTP is unencrypted — visible to anyone capturing traffic on the network. Most websites now redirect HTTP to HTTPS automatically.",
+    trap:"HTTP is unencrypted. HTTPS (port 443) is the encrypted version using TLS. Modern networks should redirect all port 80 traffic to port 443." },
+  { id:"pop3",   hour:7,  icon:"📬", name:"POP3",   port:"110",   proto:"TCP",  protoColor:"#34d399", cat:"email",
+    scene:"<strong>Post Office Protocol v3.</strong> Downloads email from a mail server to your local device and then deletes it from the server. Once downloaded to one device the email is no longer accessible from other devices.",
+    trap:"POP3 removes email from the server after download. If you check email on two devices, the second device sees nothing. Use IMAP (143) if you need email accessible on multiple devices." },
+  { id:"ntp",    hour:8,  icon:"🕐", name:"NTP",    port:"123",   proto:"UDP",  protoColor:"#facc15", cat:"services",
+    scene:"<strong>Network Time Protocol.</strong> Synchronises clocks across all network devices to a common time source. Accurate time is critical for log timestamps, security certificates, and authentication protocols like Kerberos.",
+    trap:"NTP uses UDP, not TCP. If device clocks are out of sync, Kerberos authentication fails and log timestamps become unreliable. Always configure NTP on Cisco devices." },
+  { id:"imap",   hour:9,  icon:"☁️", name:"IMAP",   port:"143",   proto:"TCP",  protoColor:"#34d399", cat:"email",
+    scene:"<strong>Internet Message Access Protocol.</strong> Retrieves email from a mail server while keeping the original messages stored on the server. Email stays synced and accessible from any device — phone, laptop, tablet — at any time.",
+    trap:"IMAP keeps email on the server (143). POP3 removes it (110). IMAP is better for multiple devices. IMAP is the modern standard — POP3 is legacy." },
+  { id:"snmp",   hour:10, icon:"📡", name:"SNMP",   port:"161/162",proto:"UDP", protoColor:"#f472b6", cat:"mgmt",
+    scene:"<strong>Simple Network Management Protocol.</strong> Used to monitor and manage network devices. Port <strong>161</strong> receives polling requests — the management station asks devices for their status. Port <strong>162</strong> receives traps — devices send unsolicited alerts when something goes wrong.",
+    trap:"Port 161 = polling (manager asks device). Port 162 = traps (device alerts manager). Use SNMPv3 — the only version with encryption and authentication. SNMPv1 and v2c send community strings in plain text." },
+  { id:"https",  hour:11, icon:"🔒", name:"HTTPS",  port:"443",   proto:"TCP",  protoColor:"#60a5fa", cat:"web",
+    scene:"<strong>HTTP Secure.</strong> Encrypted web traffic using TLS (Transport Layer Security). All data between the browser and server is encrypted — login credentials, payment details, and all page content. The padlock in your browser indicates HTTPS on port 443.",
+    trap:"HTTPS is HTTP over TLS. Port 443. HTTP (80) and HTTPS (443) are the same protocol — one encrypted, one not. Always redirect port 80 to 443 in production environments." }
+];
+
+const quadPorts = [
+  { id:"tftp",      quad:"tr", icon:"📁", name:"TFTP",       port:"69",      proto:"UDP",  protoColor:"#ffffff", bg:"#1a1a2e", border:"#ffffff", numColor:"#ffffff",
+    scene:"<strong>Trivial File Transfer Protocol.</strong> A simplified version of FTP with no authentication and no encryption. Used primarily to transfer Cisco IOS images and configuration files between devices on a local network.",
+    trap:"TFTP uses UDP with NO authentication — anyone on the network can send or receive files. Never use over the internet. Only appropriate for isolated management networks." },
+  { id:"syslog",    quad:"br", icon:"📋", name:"Syslog",     port:"514",     proto:"UDP",  protoColor:"#ffffff", bg:"#1a1a2e", border:"#ffffff", numColor:"#ffffff",
+    scene:"<strong>System Logging Protocol.</strong> Network devices send log messages to a centralised syslog server. Captures events such as interface changes, authentication failures, and configuration changes across all devices in one place.",
+    trap:"Syslog uses UDP — messages can be lost with no notification. There are 8 severity levels 0–7. Level 0 = Emergency (most critical). Level 7 = Debug (most verbose). Lower number = more severe." },
+  { id:"aaa",       quad:"bl", icon:"🛡️", name:"AAA",        port:"49/1812", proto:"Both", protoColor:"#ffffff", bg:"#1a1a2e", border:"#ffffff", numColor:"#ffffff",
+    scene:"<strong>AAA — Authentication, Authorisation, and Accounting.</strong> Two main protocols: <strong>TACACS+</strong> on port 49 is Cisco proprietary and separates each AAA function independently using TCP. <strong>RADIUS</strong> on port 1812 is the industry standard and combines authentication and authorisation, using UDP.",
+    trap:"TACACS+ port 49 — Cisco proprietary, separates AAA, uses TCP, encrypts entire packet. RADIUS port 1812/1813 — industry standard, uses UDP, only encrypts password. Use TACACS+ for managing Cisco devices, RADIUS for authenticating network users." },
+  { id:"syslogtls", quad:"tl", icon:"🔏", name:"Syslog TLS", port:"6514",    proto:"TCP",  protoColor:"#ffffff", bg:"#1a1a2e", border:"#ffffff", numColor:"#ffffff",
+    scene:"<strong>Syslog over TLS.</strong> The encrypted version of Syslog. All log messages are sent over a TLS-encrypted TCP connection to the syslog server, preventing log tampering or interception in transit.",
+    trap:"Standard Syslog (514) uses UDP with no encryption — logs can be intercepted or tampered with. Syslog over TLS (6514) uses TCP and encrypts all log traffic. If the exam asks about secure or encrypted logging, the answer is port 6514." }
+];
+
+let mode = 'flip';
+let clockMode = 'ccna';
+let selected = null;
+let confidence = {};
+
+function setClockMode(cm) {
+  clockMode = cm;
+  document.getElementById('btn-ccna-clock').classList.toggle('active', cm === 'ccna');
+  document.getElementById('btn-custom-clock').classList.toggle('active', cm === 'custom');
+
+  const isCustom = cm === 'custom';
+  document.getElementById('btn-allports').style.display = isCustom ? 'inline-block' : 'none';
+  document.getElementById('custom-clock-bar').style.display = isCustom ? 'flex' : 'none';
+
+  // Always close all ports overlay when switching modes
+  const overlay = document.getElementById('allPortsOverlay');
+  overlay.classList.remove('show');
+  document.getElementById('btn-allports').classList.remove('active');
+
+  selected = null;
+  rebuildClock();
+  updatePortCountBadge();
+  document.getElementById('infoPanel').innerHTML = isCustom
+    ? `<p class="panel-empty">⚙️ Custom Clock<br><span style="color:#4a9eda;font-size:12px;">Open 📋 Edit Clock to add ports to this clock</span></p>`
+    : `<p class="panel-empty">👆 Tap any port on the clock<br>
+    <span style="color:#56B4E9;">⬤</span> Confident &nbsp;
+    <span style="color:#E69F00;">⬤</span> Shaky &nbsp;
+    <span style="color:#2a3f54;">⬤</span> Not reviewed</p>`;
+}
+
+function getAllPorts() { return [...outerPorts, ...quadPorts]; }
+
+function placeMarkers() {
+  const face = document.getElementById('clockFace');
+  const cx = 260, cy = 260, r = 210;
+
+  const guide = document.createElement('div');
+  guide.className = 'ring-guide';
+  guide.style.width = (r*2)+'px'; guide.style.height = (r*2)+'px';
+  face.appendChild(guide);
+
+  outerPorts.forEach(p => {
+    if (clockMode !== 'ccna') return;
+    const angle = ((p.hour % 12) / 12) * 2 * Math.PI - Math.PI / 2;
+    const x = cx + r * Math.cos(angle);
+    const y = cy + r * Math.sin(angle);
+    const c = CAT[p.cat];
+
+    const marker = document.createElement('div');
+    marker.className = 'port-marker';
+    marker.style.left = x+'px'; marker.style.top = y+'px';
+
+    if (mode === 'flip') {
+      const wrap = document.createElement('div');
+      wrap.className = 'flip-wrap';
+      wrap.id = 'flip-'+p.id;
+      const inner = document.createElement('div');
+      inner.className = 'flip-inner';
+      inner.id = 'flipinner-'+p.id;
+
+      const front = document.createElement('div');
+      front.className = 'flip-front';
+      front.style.background = c.bg; front.style.borderColor = c.border;
+      front.innerHTML = `<span class="flip-front-name" style="color:${c.num}">${p.name}</span>`;
+
+      const back = document.createElement('div');
+      back.className = 'flip-back';
+      back.style.borderColor = c.border;
+      back.innerHTML = `<span class="flip-back-num" style="color:${c.num}">${p.port}</span><span class="flip-back-name" style="color:${c.num}">${p.proto}</span>`;
+
+      inner.appendChild(front); inner.appendChild(back);
+      wrap.appendChild(inner);
+      wrap.onclick = () => { inner.classList.toggle('flipped'); showPort(p.id); };
+
+      const confDot = document.createElement('div');
+      confDot.className = 'conf-dot ' + (confidence[p.id] || '');
+      confDot.id = 'conf-'+p.id;
+      confDot.style.position = 'absolute'; confDot.style.top = '2px'; confDot.style.right = '2px'; confDot.style.zIndex = '8';
+
+      marker.style.position = 'absolute';
+      marker.appendChild(wrap);
+      marker.appendChild(confDot);
+    } else {
+      const inner = document.createElement('div');
+      inner.className = 'port-inner';
+      inner.id = 'marker-'+p.id;
+      inner.style.background = c.bg; inner.style.borderColor = c.border;
+      inner.innerHTML = `<span class="port-num" style="color:${c.num}">${p.port}</span><span class="port-name" style="color:${c.num}">${p.name}</span>`;
+      inner.onclick = () => showPort(p.id);
+
+      const confDot = document.createElement('div');
+      confDot.className = 'conf-dot ' + (confidence[p.id] || '');
+      confDot.id = 'conf-'+p.id;
+      inner.appendChild(confDot);
+      marker.appendChild(inner);
+    }
+    face.appendChild(marker);
+  });
+
+  const qPositions = { tr:{x:cx+42,y:cy-42}, br:{x:cx+42,y:cy+42}, bl:{x:cx-42,y:cy+42}, tl:{x:cx-42,y:cy-42} };
+  if (clockMode === 'ccna') {
+    quadPorts.forEach(p => {
+      const pos = qPositions[p.quad];
+      const qi = document.createElement('div');
+      qi.className = 'quad-icon';
+      qi.id = 'marker-'+p.id;
+      qi.style.left = pos.x+'px'; qi.style.top = pos.y+'px';
+      qi.style.transform = 'translate(-50%,-50%)';
+      qi.style.position = 'absolute';
+      qi.style.background = p.bg; qi.style.borderColor = p.border;
+      qi.innerHTML = `<span class="q-port" style="color:${p.numColor}">${p.port}</span><span class="q-name" style="color:${p.numColor}">${p.name}</span>`;
+      qi.onclick = () => showPort(p.id);
+      face.appendChild(qi);
+    });
+  }
+
+  // Render custom ports — only in custom clock mode
+  if (clockMode === 'custom') {
+    Object.entries(customClockPorts).forEach(([portNum, hour]) => {
+      const allData = [...ccnaPorts, ...commonPorts];
+      const p = allData.find(x => x.port === portNum);
+      if (!p) return;
+
+      const angle = ((hour % 12) / 12) * 2 * Math.PI - Math.PI / 2;
+      const x = cx + r * Math.cos(angle);
+      const y = cy + r * Math.sin(angle);
+
+      const marker = document.createElement('div');
+      marker.className = 'port-marker';
+      marker.style.left = x+'px'; marker.style.top = y+'px';
+
+      const inner = document.createElement('div');
+      inner.className = 'port-inner';
+      inner.id = 'marker-custom-'+portNum;
+      inner.style.background = '#1a1a2e';
+      inner.style.borderColor = p.catColor;
+      inner.innerHTML = `<span class="port-num" style="color:${p.catColor}">${p.port}</span><span class="port-name" style="color:${p.catColor}">${p.name}</span>`;
+      inner.onclick = () => { moveHands(hour); showPortFromTable(p); };
+      marker.appendChild(inner);
+      face.appendChild(marker);
+    });
+  }
+}
+
+function moveHands(hour) {
+  const hand = document.getElementById('handHour');
+  if (!hand) return;
+  hand.classList.remove('idle');
+  const angle = ((hour % 12) / 12) * 360;
+  hand.style.transform = `rotate(${angle}deg)`;
+}
+
+function startIdleAnimation() {
+  const hand = document.getElementById('handHour');
+  if (hand && !selected) {
+    hand.style.transform = 'rotate(0deg)';
+    hand.classList.add('idle');
+  }
+}
+
+function showPort(id) {
+  const p = getAllPorts().find(x => x.id === id);
+  if (!p) return;
+
+  if (selected && selected !== id) {
+    const prev = document.getElementById('marker-'+selected);
+    if (prev) { prev.classList.remove('active'); if (prev.classList.contains('quad-icon')) prev.style.transform = 'translate(-50%,-50%)'; }
+  }
+  selected = id;
+  const curr = document.getElementById('marker-'+id);
+  if (curr) curr.classList.add('active');
+
+  if (p.hour !== undefined) moveHands(p.hour);
+
+  const isQuad = quadPorts.find(x => x.id === id);
+  const c = isQuad ? null : CAT[p.cat];
+  const ringTag = isQuad
+    ? `<span class="ring-tag" style="background:${p.bg};color:${p.numColor};border:1px solid ${p.border};">Inner quadrant — secondary</span>`
+    : `<span class="ring-tag" style="background:${c.bg};color:${c.num};border:1px solid ${c.border};">${p.cat.charAt(0).toUpperCase()+p.cat.slice(1)}</span>`;
+
+  const conf = confidence[id] || '';
+  const sceneHtml = `<p class="panel-section">What it does</p><p class="panel-scene">${p.scene}</p>`;
+
+  // Build prev/next navigation
+  const allPortsList = getAllPorts();
+  const currentIdx = allPortsList.findIndex(x => x.id === id);
+  const prevPort = currentIdx > 0 ? allPortsList[currentIdx - 1] : null;
+  const nextPort = currentIdx < allPortsList.length - 1 ? allPortsList[currentIdx + 1] : null;
+
+  // Confidence label
+  const confLabel = conf === 'confident' ? '<span style="color:#56B4E9;">● Confident</span>' : conf === 'shaky' ? '<span style="color:#E69F00;">● Shaky</span>' : '<span style="color:#3a5068;">● Not reviewed</span>';
+
+  document.getElementById('infoPanel').innerHTML = `
+    <div class="panel-header">
+      <span class="panel-icon">${p.icon}</span>
+      <div><p class="panel-title">${p.name}</p>
+      <span class="panel-proto" style="background:${p.protoColor}22;color:${p.protoColor};">${p.proto}</span></div>
+      <span class="panel-port" style="background:${isQuad?p.bg:c.bg};color:${isQuad?p.numColor:c.num};">Port ${p.port}</span>
+    </div>
+    ${ringTag}
+    ${sceneHtml}
+    <p class="panel-section">Exam trap</p>
+    <div class="panel-trap"><strong>Watch out:</strong> ${p.trap}</div>
+    <div class="conf-section-label">Confidence ${confLabel}</div>
+    <div class="conf-btns">
+      <button class="conf-btn ${conf==='confident'?'set-confident':''}" onclick="setConfidence('${id}','confident')">✓ Confident<br><span style="font-size:10px;opacity:0.6;">I know this</span></button>
+      <button class="conf-btn ${conf==='shaky'?'set-shaky':''}" onclick="setConfidence('${id}','shaky')">~ Shaky<br><span style="font-size:10px;opacity:0.6;">Need practice</span></button>
+      <button class="conf-btn" onclick="setConfidence('${id}','')">✕ Clear<br><span style="font-size:10px;opacity:0.6;">Reset</span></button>
+    </div>
+    <div class="port-nav">
+      <button class="port-nav-btn" onclick="showPort('${prevPort?prevPort.id:''}')" ${!prevPort?'disabled':''}>← Prev</button>
+      <span class="port-nav-label" style="font-size:10px;color:#3a5068;">${currentIdx+1} of ${allPortsList.length}</span>
+      <button class="port-nav-btn" onclick="showPort('${nextPort?nextPort.id:''}')" ${!nextPort?'disabled':''}>Next →</button>
+    </div>`;
+}
+
+function updateConfTracker() {
+  const allPorts = getAllPorts();
+  const confident = [], shaky = [], unreviewed = [];
+
+  allPorts.forEach(p => {
+    const conf = confidence[p.id] || '';
+    const entry = { id: p.id, name: p.name, port: p.port };
+    if (conf === 'confident') confident.push(entry);
+    else if (conf === 'shaky') shaky.push(entry);
+    else unreviewed.push(entry);
+  });
+
+  const total = allPorts.length;
+  const pct = total > 0 ? Math.round((confident.length / total) * 100) : 0;
+  const shakePct = total > 0 ? Math.round(((confident.length + shaky.length) / total) * 100) : 0;
+
+  document.getElementById('confProgressBar').style.width = shakePct + '%';
+  document.getElementById('confProgressLabel').textContent =
+    `${confident.length}/${total} ready (${pct}%)`;
+
+  function renderList(listId, items, color) {
+    const el = document.getElementById(listId);
+    if (items.length === 0) {
+      el.innerHTML = `<span style="font-size:10px;color:#2a3540;font-style:italic;">None yet</span>`;
+      return;
+    }
+    el.innerHTML = items.map(p => `
+      <button onclick="showPort('${p.id}')" style="background:none;border:none;cursor:pointer;text-align:left;padding:3px 6px;border-radius:6px;transition:background 0.15s;width:100%;"
+        onmouseover="this.style.background='#252830'" onmouseout="this.style.background='none'">
+        <span style="font-size:11px;font-weight:700;color:${color};">${p.port}</span>
+        <span style="font-size:10px;color:#4a6a84;margin-left:4px;">${p.name}</span>
+      </button>`).join('');
+  }
+
+  renderList('confListConfident', confident, '#56B4E9');
+  renderList('confListShaky', shaky, '#E69F00');
+  renderList('confListUnreviewed', unreviewed, '#4a6a84');
+}
+
+function setConfidence(id, level) {
+  confidence[id] = level;
+  const dot = document.getElementById('conf-'+id);
+  if (dot) { dot.className = 'conf-dot ' + level; }
+  if (selected === id) showPort(id);
+  updateConfTracker();
+}
+
+function setMode(m) {
+  if (quizModeActive) { flipToClock(); return; }
+  mode = m;
+  document.getElementById('btn-flip').classList.toggle('active', m === 'flip');
+  document.getElementById('clockFace').innerHTML = `
+    <div class="quad-bg tr"></div><div class="quad-bg br"></div>
+    <div class="quad-bg bl"></div><div class="quad-bg tl"></div>
+    <div class="hand hand-hour" id="handHour" style="transform:rotate(0deg)"></div>
+    <div class="clock-center"></div>`;
+  placeMarkers();
+  if (selected) showPort(selected);
+}
+
+// TIMED QUIZ
+let quizPorts = [];
+let quizIndex = 0;
+let quizScore = 0;
+let quizTimer = null;
+let quizTimeLeft = 10;
+let quizTimeLimit = 10;
+let quizQuestionCount = 16;
+const QUIZ_TIME = 10;
+
+// Stats tracking
+let portStats = {}; // { portNum: { name, pass: 0, fail: 0 } }
+let failedPorts = [];
+
+function updateStatsPanel() {
+  const rows = document.getElementById('statsRows');
+  const empty = document.getElementById('statsEmpty');
+  const summary = document.getElementById('statsSummary');
+  const retryBtn = document.getElementById('retryFailBtn');
+
+  if (Object.keys(portStats).length === 0) {
+    empty.style.display = 'block';
+    rows.innerHTML = '';
+    summary.style.display = 'none';
+    retryBtn.style.display = 'none';
+    return;
+  }
+
+  empty.style.display = 'none';
+  const sorted = Object.entries(portStats).sort((a,b) => b[1].fail - a[1].fail);
+  rows.innerHTML = sorted.map(([port, s]) => `
+    <div class="stats-row">
+      <span class="stats-port" style="color:${s.color}">${port}</span>
+      <span style="font-size:10px;color:#4a6a84;flex:1;padding:0 6px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${s.name}</span>
+      <div class="stats-badges">
+        <span class="stats-pass">✓ ${s.pass}</span>
+        <span class="stats-fail">✗ ${s.fail}</span>
+      </div>
+    </div>`).join('');
+
+  const totalPass = Object.values(portStats).reduce((a,s) => a+s.pass, 0);
+  const totalFail = Object.values(portStats).reduce((a,s) => a+s.fail, 0);
+  const total = totalPass + totalFail;
+  const pct = total > 0 ? Math.round((totalPass/total)*100) : 0;
+  summary.style.display = 'block';
+  summary.textContent = `${totalPass}/${total} correct across all attempts (${pct}%)`;
+
+  failedPorts = Object.entries(portStats)
+    .filter(([,s]) => s.fail > 0)
+    .map(([port]) => port);
+
+  retryBtn.style.display = failedPorts.length > 0 ? 'block' : 'none';
+  retryBtn.textContent = `↺ Retry ${failedPorts.length} failed port${failedPorts.length > 1 ? 's' : ''}`;
+}
+
+function retryFailed() {
+  if (failedPorts.length === 0) return;
+  const allData = [...getAllPorts(), ...ccnaPorts, ...commonPorts];
+  const portsToRetry = failedPorts.map(portNum => allData.find(p => p.port === portNum)).filter(Boolean);
+  if (portsToRetry.length === 0) return;
+  quizPorts = portsToRetry.sort(() => Math.random() - 0.5).slice(0, quizQuestionCount);
+  quizIndex = 0; quizScore = 0;
+  flipToQuiz();
+  showQuizQuestion();
+}
+
+function qf(id) { return document.getElementById('quizFace').querySelector('#'+id); }
+
+let quizModeActive = false;
+
+function toggleQuizMode() {
+  if (quizModeActive) {
+    flipToClock();
+  } else {
+    enterQuizMode();
+  }
+}
+
+function flipToQuiz() {
+  quizModeActive = true;
+  document.body.classList.add('quiz-mode');
+  document.getElementById('clockFlip').classList.add('flipped');
+  document.getElementById('btn-flip').classList.remove('active');
+  document.getElementById('btn-ccna-clock').classList.remove('active');
+  document.getElementById('btn-custom-clock').classList.remove('active');
+  document.getElementById('btn-quiz').classList.add('active');
+}
+
+function flipToClock() {
+  clearInterval(quizTimer);
+  quizModeActive = false;
+  document.body.classList.remove('quiz-mode');
+  document.getElementById('clockFlip').classList.remove('flipped');
+  document.getElementById('btn-quiz').classList.remove('active');
+  document.getElementById('btn-ccna-clock').classList.toggle('active', clockMode === 'ccna');
+  document.getElementById('btn-custom-clock').classList.toggle('active', clockMode === 'custom');
+  document.getElementById('btn-flip').classList.add('active');
+  updateStatsPanel();
+}
+
+function enterQuizMode() {
+  // Get available ports
+  let available;
+  if (clockMode === 'custom') {
+    const allData = [...ccnaPorts, ...commonPorts];
+    available = Object.keys(customClockPorts).map(p => allData.find(x => x.port === p)).filter(Boolean);
+  } else {
+    available = [...getAllPorts()];
+  }
+
+  flipToQuiz();
+  const maxQ = available.length;
+  const face = document.getElementById('quizFace');
+  face.innerHTML = `
+    <p class="qf-title">⏱ Quiz Settings</p>
+    <div class="qf-row">
+      <span class="qf-label">Time per question</span>
+      <input type="range" class="qf-slider" id="qfTimerSlider" min="5" max="30" step="5" value="${quizTimeLimit}"
+        oninput="document.getElementById('qfTimerVal').textContent=this.value+'s';quizTimeLimit=parseInt(this.value);">
+      <span class="qf-val" id="qfTimerVal">${quizTimeLimit}s</span>
+    </div>
+    <div class="qf-row">
+      <span class="qf-label">Questions</span>
+      <input type="range" class="qf-slider" id="qfCountSlider" min="1" max="${maxQ}" step="1" value="${Math.min(quizQuestionCount, maxQ)}"
+        oninput="document.getElementById('qfCountVal').textContent=this.value;quizQuestionCount=parseInt(this.value);">
+      <span class="qf-val" id="qfCountVal">${Math.min(quizQuestionCount, maxQ)}</span>
+    </div>
+    ${available.length === 0 ? `<p style="font-size:12px;color:#E69F00;margin-bottom:12px;">No ports on custom clock yet — add ports via Edit Clock first.</p>` : ''}
+    <button class="qf-start" onclick="startQuizFromFace()" ${available.length === 0 ? 'disabled style="opacity:0.4"' : ''}>▶ Start Quiz</button>
+    <button class="qf-end" onclick="flipToClock()">✕ Cancel</button>`;
+}
+
+function startQuizFromFace() {
+  let portsToQuiz;
+  if (clockMode === 'custom') {
+    const allData = [...ccnaPorts, ...commonPorts];
+    portsToQuiz = Object.keys(customClockPorts).map(p => allData.find(x => x.port === p)).filter(Boolean);
+  } else {
+    portsToQuiz = [...getAllPorts()];
+  }
+  quizPorts = portsToQuiz.sort(() => Math.random() - 0.5).slice(0, quizQuestionCount);
+  quizIndex = 0; quizScore = 0;
+  showQuizQuestion();
+}
+
+function showQuizQuestion() {
+  if (quizIndex >= quizPorts.length) { showQuizResults(); return; }
+  const p = quizPorts[quizIndex];
+  quizTimeLeft = quizTimeLimit;
+
+  document.getElementById('quizFace').innerHTML = `
+    <p class="qf-counter">${quizIndex+1} of ${quizPorts.length}</p>
+    <p class="qf-prompt">${p.name}</p>
+    <p class="qf-sub">What is the port number?</p>
+    <div class="qf-timer-wrap"><div class="qf-timer-bar" id="qfTimerBar" style="width:100%"></div></div>
+    <input class="qf-input" id="qfInput" type="text" inputmode="numeric" placeholder="port number" autofocus onkeydown="if(event.key==='Enter')checkQuiz()">
+    <p class="qf-feedback" id="qfFeedback"></p>
+    <button class="qf-submit" onclick="checkQuiz()">Submit</button>
+    <button class="qf-end" onclick="endQuizEarly()">✕ End quiz</button>`;
+
+  setTimeout(() => { const inp = document.getElementById('qfInput'); if(inp) inp.focus(); }, 100);
+
+  if (quizTimer) clearInterval(quizTimer);
+  quizTimer = setInterval(() => {
+    quizTimeLeft -= 0.1;
+    const pct = (quizTimeLeft / quizTimeLimit) * 100;
+    const bar = document.getElementById('qfTimerBar');
+    if (bar) {
+      bar.style.width = Math.max(0, pct) + '%';
+      bar.style.background = pct > 50 ? '#4a9eda' : pct > 25 ? '#E69F00' : '#e06060';
+    }
+    if (quizTimeLeft <= 0) { clearInterval(quizTimer); autoFail(); }
+  }, 100);
+}
+
+function recordStat(p, correct) {
+  const key = p.port;
+  const color = p.catColor || '#4a9eda';
+  if (!portStats[key]) portStats[key] = { name: p.name, pass: 0, fail: 0, color };
+  if (correct) portStats[key].pass++; else portStats[key].fail++;
+}
+
+function checkQuiz() {
+  clearInterval(quizTimer);
+  const p = quizPorts[quizIndex];
+  const input = document.getElementById('qfInput');
+  if (!input) return;
+  const val = input.value.trim();
+  const accepted = p.port.split('/').map(x=>x.trim());
+  const correct = accepted.some(a => val === a || val.replace(/\s/g,'') === a.replace(/\s/g,''));
+  if (correct) quizScore++;
+  recordStat(p, correct);
+  const fb = document.getElementById('qfFeedback');
+  if (fb) { fb.textContent = correct ? '✓ Correct!' : `✗ Answer: ${p.port}`; fb.className = 'qf-feedback ' + (correct ? 'correct' : 'wrong'); }
+  if (input) input.disabled = true;
+  quizIndex++;
+  setTimeout(showQuizQuestion, 1200);
+}
+
+function autoFail() {
+  const p = quizPorts[quizIndex];
+  recordStat(p, false);
+  const fb = document.getElementById('qfFeedback');
+  if (fb) { fb.textContent = `⏱ Time up! Answer: ${p.port}`; fb.className = 'qf-feedback wrong'; }
+  const input = document.getElementById('qfInput');
+  if (input) input.disabled = true;
+  quizIndex++;
+  setTimeout(showQuizQuestion, 1400);
+}
+
+function endQuizEarly() {
+  clearInterval(quizTimer);
+  showQuizResults();
+}
+
+function showQuizResults() {
+  clearInterval(quizTimer);
+  const total = quizPorts.length;
+  const pct = total > 0 ? Math.round((quizScore / total) * 100) : 0;
+  const msg = pct === 100 ? '🎉 Perfect score!' : pct >= 75 ? '💪 Strong result' : pct >= 50 ? '📈 Getting there' : '🔄 Keep practising';
+  const scoreColor = pct === 100 ? '#56B4E9' : pct >= 75 ? '#4a9eda' : pct >= 50 ? '#E69F00' : '#f472b6';
+
+  // Build failed port list for display inside face
+  const failedInRound = quizPorts.filter(p => portStats[p.port] && portStats[p.port].fail > 0);
+  const failList = failedInRound.length > 0
+    ? `<p style="font-size:11px;color:#4a6a84;margin:8px 0 4px;">Missed this round:</p>
+       <div style="display:flex;flex-wrap:wrap;gap:4px;justify-content:center;max-width:300px;">
+         ${failedInRound.slice(0,8).map(p => `<span style="font-size:10px;padding:2px 7px;border-radius:20px;background:rgba(230,159,0,0.15);color:#E69F00;">${p.name} (${p.port})</span>`).join('')}
+         ${failedInRound.length > 8 ? `<span style="font-size:10px;color:#4a6a84;">+${failedInRound.length - 8} more</span>` : ''}
+       </div>`
+    : `<p style="font-size:12px;color:#56B4E9;margin-top:8px;">No misses this round! 🎯</p>`;
+
+  document.getElementById('quizFace').innerHTML = `
+    <p style="font-size:13px;color:#6a7f96;margin-bottom:4px;">${msg}</p>
+    <p class="qf-big-score" style="color:${scoreColor};font-size:64px;">${quizScore}<span style="font-size:28px;color:#4a6a84;">/${total}</span></p>
+    <p style="font-size:14px;font-weight:700;color:${scoreColor};margin-bottom:8px;">${pct}%</p>
+    ${failList}
+    <div class="qf-btn-row" style="margin-top:16px;">
+      <button class="qf-submit" onclick="startQuizFromFace()">↺ Try again</button>
+      <button class="qf-submit" style="background:#2a3f54;" onclick="flipToClock()">✕ Close</button>
+    </div>`;
+  updateStatsPanel();
+}
+
+function closeQuiz() {
+  flipToClock();
+}
+
+// ALL PORTS TABLE
+const ccnaPorts = [
+  { port:"20",   name:"FTP Data",    proto:"TCP",  cat:"File Transfer", catColor:"#ea580c" },
+  { port:"21",   name:"FTP Control", proto:"TCP",  cat:"File Transfer", catColor:"#ea580c" },
+  { port:"22",   name:"SSH",         proto:"TCP",  cat:"Remote Access", catColor:"#7c3aed" },
+  { port:"23",   name:"Telnet",      proto:"TCP",  cat:"Remote Access", catColor:"#7c3aed" },
+  { port:"25",   name:"SMTP",        proto:"TCP",  cat:"Email",         catColor:"#0891b2" },
+  { port:"49",   name:"TACACS+",     proto:"TCP",  cat:"Security/AAA",  catColor:"#d97706" },
+  { port:"53",   name:"DNS",         proto:"Both", cat:"Net Services",  catColor:"#d97706" },
+  { port:"67",   name:"DHCP Server", proto:"UDP",  cat:"Net Services",  catColor:"#d97706" },
+  { port:"68",   name:"DHCP Client", proto:"UDP",  cat:"Net Services",  catColor:"#d97706" },
+  { port:"69",   name:"TFTP",        proto:"UDP",  cat:"File Transfer", catColor:"#ea580c" },
+  { port:"80",   name:"HTTP",        proto:"TCP",  cat:"Web",           catColor:"#2563eb" },
+  { port:"110",  name:"POP3",        proto:"TCP",  cat:"Email",         catColor:"#0891b2" },
+  { port:"123",  name:"NTP",         proto:"UDP",  cat:"Net Services",  catColor:"#d97706" },
+  { port:"143",  name:"IMAP",        proto:"TCP",  cat:"Email",         catColor:"#0891b2" },
+  { port:"161",  name:"SNMP",        proto:"UDP",  cat:"Management",    catColor:"#db2777" },
+  { port:"162",  name:"SNMP Trap",   proto:"UDP",  cat:"Management",    catColor:"#db2777" },
+  { port:"443",  name:"HTTPS",       proto:"TCP",  cat:"Web",           catColor:"#2563eb" },
+  { port:"514",  name:"Syslog",      proto:"UDP",  cat:"Management",    catColor:"#db2777" },
+  { port:"1812", name:"RADIUS Auth", proto:"UDP",  cat:"Security/AAA",  catColor:"#d97706" },
+  { port:"1813", name:"RADIUS Acct", proto:"UDP",  cat:"Security/AAA",  catColor:"#d97706" },
+  { port:"6514", name:"Syslog TLS",  proto:"TCP",  cat:"Management",    catColor:"#db2777" },
+];
+
+const commonPorts = [
+  { port:"7",    name:"Echo",               proto:"Both", cat:"Testing",       catColor:"#6b7280", desc:"Returns any data sent to it. Used for network testing and diagnostics — basically a network mirror." },
+  { port:"19",   name:"Chargen",            proto:"Both", cat:"Testing",       catColor:"#6b7280", desc:"Character generator protocol. Sends a continuous stream of characters. Used historically for testing but now largely disabled due to abuse." },
+  { port:"37",   name:"Time",               proto:"Both", cat:"Net Services",  catColor:"#d97706", desc:"Legacy time synchronisation protocol. Returns the current time as a 32-bit integer. Superseded by NTP (port 123)." },
+  { port:"43",   name:"WHOIS",              proto:"TCP",  cat:"Net Services",  catColor:"#d97706", desc:"Queries domain registration databases to find ownership, registration dates, and contact information for domain names and IP addresses." },
+  { port:"70",   name:"Gopher",             proto:"TCP",  cat:"Web",           catColor:"#2563eb", desc:"A pre-web document retrieval protocol. Largely obsolete — replaced by HTTP. You may encounter it in historical networking contexts." },
+  { port:"79",   name:"Finger",             proto:"TCP",  cat:"Net Services",  catColor:"#d97706", desc:"Returns information about logged-in users on a system. Considered a security risk and disabled on most modern systems." },
+  { port:"88",   name:"Kerberos",           proto:"Both", cat:"Security/AAA",  catColor:"#d97706", desc:"Network authentication protocol used in Windows Active Directory environments. Provides secure single sign-on using tickets rather than passwords over the network.", tip:"Kerberos requires accurate time synchronisation — if clocks are more than 5 minutes apart authentication fails. This is why NTP (port 123) is critical in Windows environments." },
+  { port:"102",  name:"Microsoft Exchange", proto:"TCP",  cat:"Email",         catColor:"#0891b2", desc:"Used by Microsoft Exchange server for MAPI (Messaging Application Programming Interface) communication between Outlook clients and Exchange servers." },
+  { port:"111",  name:"RPC",                proto:"Both", cat:"Net Services",  catColor:"#d97706", desc:"Remote Procedure Call portmapper. Maps RPC services to their dynamically assigned ports. Required for NFS and other RPC-based services to function." },
+  { port:"119",  name:"NNTP",               proto:"TCP",  cat:"Email",         catColor:"#0891b2", desc:"Network News Transfer Protocol. Used to read and post Usenet newsgroup articles. Largely superseded by web-based forums." },
+  { port:"135",  name:"MS RPC",             proto:"TCP",  cat:"Windows",       catColor:"#7c3aed", desc:"Microsoft RPC endpoint mapper. Used by Windows for DCOM and WMI communication. Commonly targeted by malware — often blocked at perimeter firewalls." },
+  { port:"137",  name:"NetBIOS Name",       proto:"UDP",  cat:"Windows",       catColor:"#7c3aed", desc:"NetBIOS name service. Resolves NetBIOS names to IP addresses on Windows networks. Legacy protocol largely replaced by DNS." },
+  { port:"138",  name:"NetBIOS Datagram",   proto:"UDP",  cat:"Windows",       catColor:"#7c3aed", desc:"NetBIOS datagram service. Used for connectionless communication on Windows networks including browsing and messaging between hosts." },
+  { port:"139",  name:"NetBIOS Session",    proto:"TCP",  cat:"Windows",       catColor:"#7c3aed", desc:"NetBIOS session service. Used for connection-oriented file and printer sharing on older Windows networks. Superseded by SMB over port 445." },
+  { port:"179",  name:"BGP",                proto:"TCP",  cat:"Routing",       catColor:"#059669", desc:"Border Gateway Protocol. The routing protocol of the internet — used between autonomous systems (ISPs, large organisations) to exchange routing information.", tip:"BGP is not on the CCNA exam in depth but you should know it is the exterior gateway protocol used between autonomous systems on the internet, operating on TCP port 179." },
+  { port:"194",  name:"IRC",                proto:"TCP",  cat:"Messaging",     catColor:"#6b7280", desc:"Internet Relay Chat. A real-time text messaging protocol. Still used in some technical communities but largely replaced by modern chat platforms." },
+  { port:"389",  name:"LDAP",               proto:"Both", cat:"Directory",     catColor:"#7c3aed", desc:"Lightweight Directory Access Protocol. Used to query and modify directory services like Microsoft Active Directory. Stores user accounts, groups, and organisational data." },
+  { port:"427",  name:"SLP",                proto:"Both", cat:"Net Services",  catColor:"#d97706", desc:"Service Location Protocol. Allows computers to discover network services without manual configuration. Used in some Apple and enterprise environments." },
+  { port:"445",  name:"SMB",                proto:"TCP",  cat:"File Transfer", catColor:"#ea580c", desc:"Server Message Block. The primary Windows file and printer sharing protocol. Used for shared drives, printers, and inter-process communication on Windows networks.", tip:"SMB is commonly exploited — WannaCry ransomware used SMBv1 on port 445. Always block port 445 at the perimeter firewall and disable SMBv1." },
+  { port:"465",  name:"SMTPS",              proto:"TCP",  cat:"Email",         catColor:"#0891b2", desc:"SMTP over SSL. An older method of encrypting email submission. Port 587 with STARTTLS is now the preferred standard for encrypted email submission." },
+  { port:"500",  name:"IKE / IPsec",        proto:"UDP",  cat:"VPN/Security",  catColor:"#7c3aed", desc:"Internet Key Exchange. Used to establish and manage IPsec VPN tunnels. Handles the negotiation of encryption keys and security associations.", tip:"IKE port 500 is used for IPsec VPN negotiation. Port 4500 is used when NAT traversal is required. Both are relevant for understanding VPN concepts in CCNA security." },
+  { port:"515",  name:"LPD / Printing",     proto:"TCP",  cat:"Printing",      catColor:"#6b7280", desc:"Line Printer Daemon. A legacy Unix/Linux print spooling protocol. Allows clients to submit print jobs to a print server." },
+  { port:"520",  name:"RIP",                proto:"UDP",  cat:"Routing",       catColor:"#059669", desc:"Routing Information Protocol. A distance-vector routing protocol that uses hop count as its metric. RIPv2 supports CIDR and authentication.", tip:"RIP is a CCNA exam topic. It uses UDP port 520, has a maximum hop count of 15 (16 = unreachable), and sends updates every 30 seconds. Know it in comparison to OSPF." },
+  { port:"546",  name:"DHCPv6 Client",      proto:"UDP",  cat:"Net Services",  catColor:"#d97706", desc:"DHCPv6 client port. Used by IPv6 clients to receive address assignments from a DHCPv6 server. Part of the IPv6 address assignment process.", tip:"DHCPv6 uses ports 546 (client) and 547 (server) — the IPv6 equivalent of DHCP ports 67/68. Relevant for the IPv6 section of the CCNA exam." },
+  { port:"547",  name:"DHCPv6 Server",      proto:"UDP",  cat:"Net Services",  catColor:"#d97706", desc:"DHCPv6 server port. Used by DHCPv6 servers to respond to client requests for IPv6 address configuration.", tip:"DHCPv6 uses ports 546 (client) and 547 (server) — the IPv6 equivalent of DHCP ports 67/68. Relevant for the IPv6 section of the CCNA exam." },
+  { port:"548",  name:"AFP",                proto:"TCP",  cat:"File Transfer", catColor:"#ea580c", desc:"Apple Filing Protocol. Used for file sharing on Apple Mac networks. Largely superseded by SMB in modern macOS versions." },
+  { port:"587",  name:"SMTP Submission",    proto:"TCP",  cat:"Email",         catColor:"#0891b2", desc:"The modern standard port for email clients to submit outgoing mail to a mail server. Uses STARTTLS for encryption. Preferred over port 465." },
+  { port:"631",  name:"IPP / CUPS",         proto:"TCP",  cat:"Printing",      catColor:"#6b7280", desc:"Internet Printing Protocol. Used by CUPS (Common Unix Printing System) on Linux and macOS for network printing. Modern replacement for LPD." },
+  { port:"636",  name:"LDAPS",              proto:"TCP",  cat:"Directory",     catColor:"#7c3aed", desc:"LDAP over SSL/TLS. Encrypted version of LDAP for secure directory queries. Used when querying Active Directory securely." },
+  { port:"646",  name:"LDP",                proto:"Both", cat:"Routing",       catColor:"#059669", desc:"Label Distribution Protocol. Used in MPLS networks to distribute labels between routers for traffic engineering and VPN services." },
+  { port:"691",  name:"MS Exchange Routing",proto:"TCP",  cat:"Email",         catColor:"#0891b2", desc:"Used by Microsoft Exchange for routing group connector communication between Exchange servers in the same organisation." },
+  { port:"860",  name:"iSCSI",              proto:"TCP",  cat:"Storage",       catColor:"#6b7280", desc:"Internet SCSI. Carries SCSI storage commands over TCP/IP networks. Used for SAN (Storage Area Network) connectivity over standard Ethernet infrastructure." },
+  { port:"993",  name:"IMAPS",              proto:"TCP",  cat:"Email",         catColor:"#0891b2", desc:"IMAP over SSL/TLS. Encrypted version of IMAP for secure email retrieval. Keeps email on the server like standard IMAP but with full encryption." },
+  { port:"995",  name:"POP3S",              proto:"TCP",  cat:"Email",         catColor:"#0891b2", desc:"POP3 over SSL/TLS. Encrypted version of POP3. Downloads and removes email from the server securely." },
+  { port:"1080", name:"SOCKS Proxy",        proto:"TCP",  cat:"Proxy",         catColor:"#6b7280", desc:"SOCKS proxy protocol. Routes network traffic through a proxy server. Used for anonymisation, bypassing firewalls, and tunnelling various protocols." },
+  { port:"1194", name:"OpenVPN",            proto:"Both", cat:"VPN/Security",  catColor:"#7c3aed", desc:"Default port for OpenVPN, a widely used open-source VPN solution. Can use either UDP (preferred for performance) or TCP (for reliability through restrictive firewalls)." },
+  { port:"1433", name:"MS SQL Server",      proto:"TCP",  cat:"Database",      catColor:"#059669", desc:"Microsoft SQL Server database engine. Used for client connections to SQL Server instances. Should never be exposed directly to the internet." },
+  { port:"1434", name:"MS SQL Monitor",     proto:"UDP",  cat:"Database",      catColor:"#059669", desc:"SQL Server Browser service. Responds to queries about which SQL Server instances are running and which ports they are using." },
+  { port:"1521", name:"Oracle DB",          proto:"TCP",  cat:"Database",      catColor:"#059669", desc:"Oracle Database listener port. The default port for Oracle database client connections. Commonly seen in enterprise environments." },
+  { port:"1701", name:"L2TP",               proto:"UDP",  cat:"VPN/Security",  catColor:"#7c3aed", desc:"Layer 2 Tunneling Protocol. Used for VPN tunnels, usually combined with IPsec for encryption. Common in older Windows VPN configurations.", tip:"L2TP on its own provides no encryption — it must be paired with IPsec. L2TP/IPsec is a CCNA-relevant VPN concept." },
+  { port:"1723", name:"PPTP",               proto:"TCP",  cat:"VPN/Security",  catColor:"#7c3aed", desc:"Point-to-Point Tunneling Protocol. An older VPN protocol with known security weaknesses. Should not be used in production — replaced by L2TP/IPsec or IKEv2.", tip:"PPTP is considered insecure and deprecated. The CCNA exam may reference it as a legacy VPN protocol to avoid." },
+  { port:"2049", name:"NFS",                proto:"Both", cat:"File Transfer", catColor:"#ea580c", desc:"Network File System. Allows Unix/Linux systems to share files over a network as if they were local. Common in Linux and enterprise storage environments." },
+  { port:"2082", name:"cPanel HTTP",        proto:"TCP",  cat:"Web",           catColor:"#2563eb", desc:"Default HTTP port for cPanel web hosting control panel. Used to manage web hosting accounts, domains, and email on shared hosting servers." },
+  { port:"2083", name:"cPanel HTTPS",       proto:"TCP",  cat:"Web",           catColor:"#2563eb", desc:"Default HTTPS port for cPanel. Encrypted version of the cPanel management interface." },
+  { port:"2181", name:"ZooKeeper",          proto:"TCP",  cat:"Net Services",  catColor:"#d97706", desc:"Apache ZooKeeper coordination service. Used by distributed applications like Kafka and Hadoop for configuration management and synchronisation." },
+  { port:"2483", name:"Oracle DB SSL",      proto:"Both", cat:"Database",      catColor:"#059669", desc:"Oracle Database listener over SSL/TLS. Encrypted version of Oracle database connections on port 1521." },
+  { port:"3306", name:"MySQL",              proto:"TCP",  cat:"Database",      catColor:"#059669", desc:"MySQL and MariaDB database server. The most widely used open-source database. Powers most web applications including WordPress, Drupal, and countless others." },
+  { port:"3389", name:"RDP",                proto:"TCP",  cat:"Remote Access", catColor:"#7c3aed", desc:"Remote Desktop Protocol. Microsoft's graphical remote access protocol. Allows full desktop access to Windows systems remotely.", tip:"RDP on port 3389 is extremely commonly targeted by attackers — brute force and ransomware attacks frequently target exposed RDP. Always place behind a VPN, never expose directly to the internet." },
+  { port:"3690", name:"SVN",                proto:"TCP",  cat:"Dev Tools",     catColor:"#6b7280", desc:"Apache Subversion (SVN) version control system. Used for source code management. Largely superseded by Git in modern development." },
+  { port:"4333", name:"mSQL",               proto:"TCP",  cat:"Database",      catColor:"#059669", desc:"Mini SQL (mSQL) database server. A lightweight database system. Rarely seen in modern environments." },
+  { port:"4444", name:"Metasploit",         proto:"TCP",  cat:"Security",      catColor:"#d97706", desc:"Default listener port for Metasploit Framework reverse shells. Commonly used in penetration testing. Seeing traffic on this port on a production network is a serious red flag." },
+  { port:"4500", name:"IPsec NAT-T",        proto:"UDP",  cat:"VPN/Security",  catColor:"#7c3aed", desc:"IPsec NAT Traversal. Used when an IPsec VPN endpoint is behind a NAT device. Encapsulates IPsec packets in UDP to pass through NAT.", tip:"When IPsec VPN traffic passes through a NAT device, port 4500 is used instead of port 500. Both ports must be permitted on firewalls for IPsec to work correctly through NAT." },
+  { port:"5000", name:"UPnP / Dev Servers", proto:"TCP",  cat:"Net Services",  catColor:"#d97706", desc:"Universal Plug and Play and various development servers (Flask, Docker registries). UPnP allows devices to automatically discover services on a network." },
+  { port:"5060", name:"SIP",                proto:"Both", cat:"VoIP",          catColor:"#059669", desc:"Session Initiation Protocol. The standard signalling protocol for VoIP calls. Used to establish, modify, and terminate voice and video calls over IP networks." },
+  { port:"5061", name:"SIP TLS",            proto:"TCP",  cat:"VoIP",          catColor:"#059669", desc:"SIP over TLS. Encrypted version of SIP signalling for secure VoIP call setup. Protects call metadata from interception." },
+  { port:"5432", name:"PostgreSQL",         proto:"TCP",  cat:"Database",      catColor:"#059669", desc:"PostgreSQL database server. A powerful open-source relational database. Widely used in enterprise and web applications as an alternative to MySQL." },
+  { port:"5900", name:"VNC",                proto:"TCP",  cat:"Remote Access", catColor:"#7c3aed", desc:"Virtual Network Computing. A graphical remote desktop sharing protocol. Platform-independent alternative to RDP, works on Linux, Mac, and Windows." },
+  { port:"6379", name:"Redis",              proto:"TCP",  cat:"Database",      catColor:"#059669", desc:"Redis in-memory data store. Used as a cache, message broker, and database. Extremely fast due to storing all data in memory. Common in modern web architectures." },
+  { port:"6443", name:"Kubernetes API",     proto:"TCP",  cat:"Net Services",  catColor:"#d97706", desc:"Kubernetes API server. The control plane endpoint for managing Kubernetes clusters. All kubectl commands and cluster management traffic uses this port." },
+  { port:"6881", name:"BitTorrent",         proto:"Both", cat:"File Transfer", catColor:"#ea580c", desc:"Default BitTorrent peer-to-peer file sharing port range. Commonly blocked on corporate networks due to bandwidth consumption and copyright concerns." },
+  { port:"7001", name:"WebLogic",           proto:"TCP",  cat:"Web",           catColor:"#2563eb", desc:"Oracle WebLogic Server application server. Used for enterprise Java applications. Known for critical vulnerabilities — keep patched and never expose directly." },
+  { port:"8080", name:"HTTP Alt",           proto:"TCP",  cat:"Web",           catColor:"#2563eb", desc:"Alternative HTTP port. Commonly used for web proxies, development servers, and applications that cannot use the privileged port 80.", tip:"HTTP Alt on 8080 is common in ACL questions — when blocking or permitting web traffic you may need to include both port 80 and port 8080 depending on the environment." },
+  { port:"8443", name:"HTTPS Alt",          proto:"TCP",  cat:"Web",           catColor:"#2563eb", desc:"Alternative HTTPS port. Used for web applications and admin interfaces that need TLS but cannot use the privileged port 443." },
+  { port:"8888", name:"Jupyter Notebook",   proto:"TCP",  cat:"Dev Tools",     catColor:"#6b7280", desc:"Default port for Jupyter Notebook, a web-based Python development environment. Common in data science and machine learning workflows." },
+  { port:"9090", name:"Prometheus",         proto:"TCP",  cat:"Management",    catColor:"#db2777", desc:"Prometheus monitoring system. Collects and stores metrics from servers, applications, and network devices. Part of modern infrastructure observability stacks." },
+  { port:"9200", name:"Elasticsearch",      proto:"TCP",  cat:"Database",      catColor:"#059669", desc:"Elasticsearch REST API. A distributed search and analytics engine. Used for log analysis, full-text search, and real-time data analytics." },
+  { port:"9300", name:"Elasticsearch Cluster",proto:"TCP",cat:"Database",     catColor:"#059669", desc:"Elasticsearch cluster communication port. Used for inter-node communication between Elasticsearch cluster members." },
+  { port:"27017",name:"MongoDB",            proto:"TCP",  cat:"Database",      catColor:"#059669", desc:"MongoDB database server. A popular NoSQL document database that stores data as JSON-like documents. Widely used in modern web applications." },
+  { port:"27018",name:"MongoDB Shard",      proto:"TCP",  cat:"Database",      catColor:"#059669", desc:"MongoDB shard server port. Used for communication between MongoDB shards in a distributed database cluster." },
+];
+
+function buildTableRows(data) {
+  const hours = [12,1,2,3,4,5,6,7,8,9,10,11];
+  return data.map((p, i) => {
+    const protoColor = p.proto==='TCP' ? '#4a9eda' : p.proto==='UDP' ? '#4adaaa' : '#dada4a';
+    const protoBg   = p.proto==='TCP' ? 'rgba(74,158,218,0.15)' : p.proto==='UDP' ? 'rgba(74,218,170,0.15)' : 'rgba(218,218,74,0.15)';
+    const pid = 'port_'+p.port.replace('/','_');
+    const onClock = customClockPorts[p.port] !== undefined;
+    const assignedHour = customClockPorts[p.port];
+    const hourOptions = hours.map(h =>
+      `<option value="${h}" ${assignedHour===h?'selected':''}>${h} o'clock</option>`
+    ).join('');
+    return `<tr id="row_${pid}">
+      <td><input type="checkbox" class="port-check" id="chk_${pid}" ${onClock?'checked':''} onchange="handlePortCheck('${p.port}','${p.name}','${p.cat}','${p.catColor}',this)" style="cursor:pointer;accent-color:#4a9eda;width:14px;height:14px;"></td>
+      <td><span class="port-num-cell" style="color:${p.catColor}">${p.port}</span></td>
+      <td style="font-weight:600;color:#e0e6f0;">${p.name}</td>
+      <td><span class="proto-cell" style="background:${protoBg};color:${protoColor}">${p.proto}</span></td>
+      <td><span class="cat-cell" style="background:${p.catColor}22;color:${p.catColor}">${p.cat}</span></td>
+      <td>
+        <select id="sel_${pid}" onchange="handlePositionChange('${p.port}','${p.name}','${p.cat}','${p.catColor}',this)"
+          style="background:#1a1c22;color:#8a9bb0;border:1px solid #2e3440;border-radius:8px;padding:4px 6px;font-size:11px;cursor:pointer;${onClock?'color:#4a9eda;border-color:#4a9eda;':''}">
+          <option value="">— not on clock —</option>
+          ${hourOptions}
+        </select>
+        <span id="warn_${pid}" style="display:none;font-size:10px;color:#E69F00;margin-left:6px;">⚠ Position taken</span>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+// TWO COMPLETELY SEPARATE STORES
+// CCNA clock — read only, never modified
+const ccnaClockPorts = {};
+
+// Custom clock — starts empty, fully user controlled
+let customClockPorts = {};
+
+function initClockPorts() {
+  // Build CCNA store from outerPorts — never touched again
+  outerPorts.forEach(p => { ccnaClockPorts[p.port] = p.hour; });
+  // Custom store starts completely empty
+  customClockPorts = {};
+}
+
+function getUsedHours() {
+  // Only check custom clock hours for conflict detection
+  return Object.values(customClockPorts);
+}
+
+function isDefaultCCNA(port) {
+  return outerPorts.some(p => p.port === port);
+}
+
+function handlePortCheck(port, name, cat, catColor, checkbox) {
+  const pid = 'port_'+port.replace('/','_');
+  const sel = document.getElementById('sel_'+pid);
+  if (!checkbox.checked) {
+    // Remove from clock
+    removeCustomPort(port);
+    sel.value = '';
+    sel.style.color = '#8a9bb0';
+    sel.style.borderColor = '#2e3440';
+  } else {
+    // If dropdown has a value try to assign
+    if (sel.value) {
+      assignPortToClock(port, name, cat, catColor, parseInt(sel.value), pid);
+    }
+  }
+}
+
+function handlePositionChange(port, name, cat, catColor, select) {
+  const pid = 'port_'+port.replace('/','_');
+  const chk = document.getElementById('chk_'+pid);
+  const warn = document.getElementById('warn_'+pid);
+
+  if (!select.value) {
+    removeCustomPort(port);
+    chk.checked = false;
+    select.style.color = '#8a9bb0';
+    select.style.borderColor = '#2e3440';
+    warn.style.display = 'none';
+    return;
+  }
+
+  const hour = parseInt(select.value);
+  const usedHours = getUsedHours().filter(h => {
+    // Exclude this port's own current assignment
+    return !(customClockPorts[port] === h);
+  });
+
+  if (usedHours.includes(hour)) {
+    // Position taken — warn and reset
+    warn.style.display = 'inline';
+    select.value = customClockPorts[port] || '';
+    setTimeout(() => { warn.style.display = 'none'; }, 3000);
+    return;
+  }
+
+  warn.style.display = 'none';
+  assignPortToClock(port, name, cat, catColor, hour, pid);
+  chk.checked = true;
+}
+
+function assignPortToClock(port, name, cat, catColor, hour, pid) {
+  // Remove old assignment if exists
+  removeCustomPort(port);
+  customClockPorts[port] = hour;
+
+  // Update select style
+  const sel = document.getElementById('sel_'+pid);
+  if (sel) { sel.style.color = '#4a9eda'; sel.style.borderColor = '#4a9eda'; sel.value = hour; }
+
+  // Rebuild clock
+  rebuildClock();
+}
+
+function removeCustomPort(port) {
+  if (customClockPorts[port] !== undefined) {
+    delete customClockPorts[port];
+    rebuildClock();
+  }
+}
+
+function rebuildClock() {
+  document.getElementById('clockFace').innerHTML = `
+    <div class="quad-bg tr"></div><div class="quad-bg br"></div>
+    <div class="quad-bg bl"></div><div class="quad-bg tl"></div>
+    <div class="hand hand-hour" id="handHour" style="transform:rotate(0deg)"></div>
+    <div class="clock-center"></div>`;
+  placeMarkers();
+  updatePortCountBadge();
+  updateConfTracker();
+  if (selected) showPort(selected);
+  else setTimeout(startIdleAnimation, 100);
+}
+
+function updatePortCountBadge() {
+  const badge = document.getElementById('port-count-badge');
+  if (!badge) return;
+  const count = Object.keys(customClockPorts).length;
+  const pct = Math.round((count / 12) * 100);
+  badge.textContent = `${count} / 12 positions filled`;
+  badge.style.color = count === 0 ? '#4a6a84' : count < 6 ? '#E69F00' : count < 12 ? '#4a9eda' : '#56B4E9';
+}
+
+function resetCustomClock() {
+  if (Object.keys(customClockPorts).length === 0) return;
+  customClockPorts = {};
+  selected = null;
+  rebuildClock();
+  // Reset table if open
+  const overlay = document.getElementById('allPortsOverlay');
+  if (overlay.classList.contains('show')) {
+    document.getElementById('ccnaPortsBody').innerHTML = buildTableRows(ccnaPorts);
+    document.getElementById('commonPortsBody').innerHTML = buildTableRows(commonPorts);
+  }
+  document.getElementById('infoPanel').innerHTML = `<p class="panel-empty">⚙️ Custom Clock<br><span style="color:#4a9eda;font-size:12px;">Open 📋 Edit Clock to add ports to this clock</span></p>`;
+}
+
+function toggleAllPorts() {
+  if (clockMode !== 'custom') return;
+  const overlay = document.getElementById('allPortsOverlay');
+  const isVisible = overlay.classList.contains('show');
+  if (isVisible) {
+    overlay.classList.remove('show');
+    document.getElementById('btn-allports').classList.remove('active');
+  } else {
+    document.getElementById('ccnaPortsBody').innerHTML = buildTableRows(ccnaPorts);
+    document.getElementById('commonPortsBody').innerHTML = buildTableRows(commonPorts);
+    overlay.classList.add('show');
+    document.getElementById('btn-allports').classList.add('active');
+  }
+}
+
+document.getElementById('allPortsOverlay').addEventListener('click', function(e) {
+  if (e.target === this) toggleAllPorts();
+});
+
+function showPortFromTable(p) {
+  const trapHtml = p.tip
+    ? `<p class="panel-section">Exam tip</p><div class="panel-trap"><strong>Watch out:</strong> ${p.tip}</div>`
+    : '';
+  document.getElementById('infoPanel').innerHTML = `
+    <div class="panel-header">
+      <div><p class="panel-title" style="color:#e0e6f0;">${p.name}</p>
+      <span class="panel-proto" style="background:${p.catColor}22;color:${p.catColor};">${p.proto}</span></div>
+      <span class="panel-port" style="background:${p.catColor}22;color:${p.catColor};">Port ${p.port}</span>
+    </div>
+    <span class="ring-tag" style="background:${p.catColor}22;color:${p.catColor};border:1px solid ${p.catColor}44;">${p.cat}</span>
+    <p class="panel-section">What it does</p>
+    <p class="panel-scene" style="color:#8a9bb0;">${p.desc || 'No description available.'}</p>
+    ${trapHtml}`;
+}
+
+initClockPorts();
+document.getElementById('btn-ccna-clock').classList.add('active');
+placeMarkers();
+setTimeout(startIdleAnimation, 100);
+updateConfTracker();
+</script>
+</body>
+</html>
