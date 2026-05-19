@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Network CLI Cheatsheet</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Syne:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:#080b0f; --surface:#0d1117; --surface2:#111820; --border:#1c2330;
+    --text:#cdd9e5; --muted:#566573;
+    --forti:#ff6b35; --unifi:#3d9be9; --huawei:#e8003d;
+    --windows:#6abf69; --putty:#d4a843; --cisco:#1ba8ff;
+    --t-interface:#64d8cb; --t-routing:#f4c542; --t-dns:#a78bfa;
+    --t-arp:#fb923c; --t-conn:#34d399; --t-vpn:#f472b6;
+    --t-capture:#60a5fa; --t-firewall:#fbbf24; --t-session:#e879f9; --t-ssh:#d4a843;
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--bg);color:var(--text);font-family:'JetBrains Mono',monospace;font-size:14px;line-height:1.5;padding:0 0 60px;min-width:900px;}
+  body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.055) 2px,rgba(0,0,0,0.055) 4px);pointer-events:none;z-index:9999;}
+
+  #topbar{position:sticky;top:0;z-index:200;background:rgba(8,11,15,0.97);backdrop-filter:blur(8px);border-bottom:1px solid var(--border);padding:10px 20px 8px;}
+  .tb-row1{display:flex;align-items:center;justify-content:space-between;gap:20px;margin-bottom:8px;}
+  .tb-title h1{font-family:'Syne',sans-serif;font-size:1.55rem;font-weight:900;color:#e6edf3;line-height:1;white-space:nowrap;}
+  .tb-title h1 em{font-style:normal;background:linear-gradient(90deg,var(--cisco),var(--forti),var(--unifi),var(--huawei),var(--windows),var(--putty));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+  .tb-title .sub{font-size:0.54rem;color:var(--muted);letter-spacing:0.18em;text-transform:uppercase;margin-top:3px;}
+  .pills{display:flex;gap:5px;flex-wrap:wrap;align-items:center;justify-content:flex-end;flex-shrink:0;}
+  .pill{font-family:'Syne',sans-serif;font-size:0.55rem;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;padding:3px 8px;border-radius:3px;border:1px solid;cursor:pointer;text-decoration:none;transition:opacity 0.15s;white-space:nowrap;}
+  .pill:hover{opacity:0.7;}
+  .tb-row2{display:flex;align-items:center;gap:10px;margin-bottom:7px;}
+  #search-wrap{position:relative;flex:0 0 320px;}
+  #search{background:var(--surface2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:0.75rem;padding:5px 32px 5px 10px;width:100%;outline:none;transition:border-color 0.2s;}
+  #search::placeholder{color:var(--muted);}
+  #search:focus{border-color:#3d6491;}
+  #search-icon{position:absolute;right:9px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:0.85rem;pointer-events:none;}
+  #search-count{font-size:0.6rem;color:var(--muted);white-space:nowrap;}
+  .tb-row3{display:flex;gap:4px 5px;flex-wrap:wrap;align-items:center;}
+  .jump-label{font-family:'Syne',sans-serif;font-size:0.55rem;font-weight:800;letter-spacing:0.18em;text-transform:uppercase;color:var(--muted);margin-right:3px;white-space:nowrap;}
+  .jump{font-family:'Syne',sans-serif;font-size:0.57rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;padding:2px 7px;border-radius:3px;border:1px solid var(--border);color:#8b949e;background:transparent;text-decoration:none;transition:border-color 0.15s,color 0.15s;display:inline-flex;align-items:center;gap:4px;white-space:nowrap;}
+  .jump:hover{border-color:#3d6491;color:var(--text);}
+  .jdot{width:6px;height:6px;border-radius:1px;flex-shrink:0;display:inline-block;}
+
+  #legend{display:flex;flex-wrap:wrap;gap:5px 12px;align-items:center;margin:12px 20px;padding:9px 14px;background:var(--surface);border:1px solid var(--border);border-radius:6px;}
+  .legend-title{font-family:'Syne',sans-serif;font-size:0.58rem;font-weight:800;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted);margin-right:4px;}
+  .leg{display:flex;align-items:center;gap:5px;font-size:0.62rem;color:#8b949e;}
+  .leg-sq{width:8px;height:8px;border-radius:2px;flex-shrink:0;}
+
+  #grid-wrap{padding:0 20px;}
+  .grid{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;align-items:start;}
+
+  .col{background:var(--surface);border:1px solid var(--border);border-radius:8px;scroll-margin-top:120px;}
+  .col-head{position:sticky;top:0;z-index:10;padding:9px 11px;display:flex;align-items:center;gap:7px;border-bottom:2px solid;border-radius:7px 7px 0 0;}
+  .col-head .ico{font-size:1rem;line-height:1;}
+  .col-head .name{font-family:'Syne',sans-serif;font-size:0.82rem;font-weight:900;letter-spacing:0.1em;text-transform:uppercase;}
+
+  .cisco   .col-head{border-color:var(--cisco);  background:#04101a;}
+  .forti   .col-head{border-color:var(--forti);  background:#110a06;}
+  .unifi   .col-head{border-color:var(--unifi);  background:#060e18;}
+  .huawei  .col-head{border-color:var(--huawei); background:#120004;}
+  .windows .col-head{border-color:var(--windows);background:#061008;}
+  .putty   .col-head{border-color:var(--putty);  background:#120d03;}
+
+  .cisco   .name{color:var(--cisco);}
+  .forti   .name{color:var(--forti);}
+  .unifi   .name{color:var(--unifi);}
+  .huawei  .name{color:var(--huawei);}
+  .windows .name{color:var(--windows);}
+  .putty   .name{color:var(--putty);}
+
+  .sec{border-bottom:1px solid var(--border);}
+  .sec:last-child{border-bottom:none;}
+  .sec-label{padding:5px 9px 3px;font-size:0.63rem;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;}
+  .sec-label-left{display:flex;align-items:center;gap:5px;}
+  .sec-label-left::before{content:'';display:inline-block;width:6px;height:6px;border-radius:1px;background:currentColor;flex-shrink:0;opacity:0.85;}
+  .sec-toggle{font-size:0.6rem;opacity:0.4;transition:transform 0.2s;flex-shrink:0;}
+  .sec.collapsed .sec-toggle{transform:rotate(-90deg);opacity:0.25;}
+  .sec.collapsed .cmds{display:none;}
+
+  .t-interface{color:var(--t-interface);background:rgba(100,216,203,0.04);}
+  .t-routing  {color:var(--t-routing);  background:rgba(244,197,66,0.04);}
+  .t-dns      {color:var(--t-dns);      background:rgba(167,139,250,0.04);}
+  .t-arp      {color:var(--t-arp);      background:rgba(251,146,60,0.04);}
+  .t-conn     {color:var(--t-conn);     background:rgba(52,211,153,0.04);}
+  .t-vpn      {color:var(--t-vpn);      background:rgba(244,114,182,0.04);}
+  .t-capture  {color:var(--t-capture);  background:rgba(96,165,250,0.04);}
+  .t-firewall {color:var(--t-firewall); background:rgba(251,191,36,0.04);}
+  .t-session  {color:var(--t-session);  background:rgba(232,121,249,0.04);}
+  .t-ssh      {color:var(--t-ssh);      background:rgba(212,168,67,0.04);}
+
+  .cmds{list-style:none;padding:2px 0 6px;}
+  .cmds li{padding:3px 9px 3px 11px;border-left:2px solid transparent;transition:background 0.1s;cursor:pointer;}
+  .cmds li:hover{background:rgba(255,255,255,0.04);}
+  .t-interface .cmds li{border-color:rgba(100,216,203,0.18);}
+  .t-routing   .cmds li{border-color:rgba(244,197,66,0.18);}
+  .t-dns       .cmds li{border-color:rgba(167,139,250,0.18);}
+  .t-arp       .cmds li{border-color:rgba(251,146,60,0.18);}
+  .t-conn      .cmds li{border-color:rgba(52,211,153,0.18);}
+  .t-vpn       .cmds li{border-color:rgba(244,114,182,0.18);}
+  .t-capture   .cmds li{border-color:rgba(96,165,250,0.18);}
+  .t-firewall  .cmds li{border-color:rgba(251,191,36,0.18);}
+  .t-session   .cmds li{border-color:rgba(232,121,249,0.18);}
+  .t-ssh       .cmds li{border-color:rgba(212,168,67,0.18);}
+
+  .c{display:block;color:#dce8f0;font-size:0.72rem;word-break:break-all;}
+  .d{display:block;font-size:0.63rem;color:var(--muted);font-family:'Syne',sans-serif;font-weight:700;letter-spacing:0.02em;margin-top:1px;}
+  .cmds li:hover .c::after{content:' 📋';font-size:0.58rem;opacity:0.35;}
+  .cmds li.copied{background:rgba(52,211,153,0.1)!important;}
+  .cmds li.copied .c{color:#34d399;}
+
+  .badge{display:inline-block;font-size:0.48rem;font-family:'Syne',sans-serif;font-weight:800;letter-spacing:0.06em;padding:1px 4px;border-radius:2px;margin-left:4px;vertical-align:middle;position:relative;top:-1px;}
+  .badge-ps {background:rgba(61,155,233,0.2);color:#3d9be9;border:1px solid rgba(61,155,233,0.3);}
+  .badge-cmd{background:rgba(106,191,105,0.15);color:#6abf69;border:1px solid rgba(106,191,105,0.25);}
+
+  .cmds li.hidden{display:none;}
+  .sec.all-hidden{opacity:0.25;}
+  .sec.all-hidden .cmds li{display:none;}
+  .col.no-match{opacity:0.2;}
+  mark{background:rgba(244,197,66,0.3);color:#f4c542;border-radius:2px;padding:0 1px;}
+
+  #toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(16px);background:#34d399;color:#080b0f;font-family:'Syne',sans-serif;font-size:0.7rem;font-weight:800;letter-spacing:0.1em;padding:7px 18px;border-radius:4px;opacity:0;transition:opacity 0.2s,transform 0.2s;pointer-events:none;z-index:1000;white-space:nowrap;}
+  #toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+  footer{text-align:center;margin-top:30px;color:#1e2a35;font-size:0.58rem;letter-spacing:0.2em;text-transform:uppercase;}
+
+  @media print{
+    body{background:#fff;color:#000;font-size:8px;min-width:unset;padding:0;}
+    body::before{display:none;}
+    #topbar{position:static;background:#fff;border-bottom:2px solid #000;padding:8px 12px;}
+    #search-wrap,.pills,.tb-row2,.tb-row3,#toast{display:none!important;}
+    .tb-title h1{font-size:1.1rem;color:#000;}
+    .tb-title h1 em{-webkit-text-fill-color:#000;background:none;color:#000;}
+    #legend{border:1px solid #ccc;background:#f9f9f9;margin:6px 0;}
+    .leg{color:#333;} .legend-title{color:#666;}
+    #grid-wrap{padding:0;}
+    .grid{grid-template-columns:repeat(6,1fr);gap:5px;}
+    .col{border:1px solid #ccc;border-radius:3px;break-inside:avoid;}
+    .col-head{position:static;background:#f0f0f0!important;border-bottom:1px solid #ccc;}
+    .col-head .name{color:#000!important;}
+    .sec-label{background:#f9f9f9!important;color:#333!important;}
+    .sec-toggle{display:none;}
+    .cmds li{border-left:2px solid #ddd;padding:2px 5px 2px 7px;}
+    .c{color:#000;font-size:0.62rem;} .d{color:#666;font-size:0.55rem;}
+    .badge-ps{background:#dde8f5;color:#2255aa;border-color:#aac;}
+    .badge-cmd{background:#ddf0dd;color:#225522;border-color:#aca;}
+    footer{color:#999;}
+  }
+</style>
+</head>
+<body>
+
+<div id="topbar">
+  <div class="tb-row1">
+    <div class="tb-title">
+      <h1>Network CLI <em>Cheatsheet</em></h1>
+      <div class="sub">Networking Commands &nbsp;·&nbsp; Cisco · FortiGate · UniFi · Huawei · Windows · PuTTY</div>
+    </div>
+    <div class="pills">
+      <a class="pill" href="#col-cisco"   style="color:var(--cisco);border-color:var(--cisco)">Cisco</a>
+      <a class="pill" href="#col-forti"   style="color:var(--forti);border-color:var(--forti)">FortiGate</a>
+      <a class="pill" href="#col-unifi"   style="color:var(--unifi);border-color:var(--unifi)">UniFi</a>
+      <a class="pill" href="#col-huawei"  style="color:var(--huawei);border-color:var(--huawei)">Huawei</a>
+      <a class="pill" href="#col-windows" style="color:var(--windows);border-color:var(--windows)">Windows</a>
+      <a class="pill" href="#col-putty"   style="color:var(--putty);border-color:var(--putty)">PuTTY</a>
+    </div>
+  </div>
+  <div class="tb-row2">
+    <div id="search-wrap">
+      <input id="search" type="text" placeholder="Search commands…" autocomplete="off" spellcheck="false">
+      <span id="search-icon">⌕</span>
+    </div>
+    <span id="search-count"></span>
+  </div>
+  <div class="tb-row3">
+    <span class="jump-label">Jump →</span>
+    <a class="jump" href="#sec-interface"><span class="jdot" style="background:var(--t-interface)"></span>Interface</a>
+    <a class="jump" href="#sec-routing"><span class="jdot" style="background:var(--t-routing)"></span>Routing</a>
+    <a class="jump" href="#sec-arp"><span class="jdot" style="background:var(--t-arp)"></span>ARP/MAC</a>
+    <a class="jump" href="#sec-conn"><span class="jdot" style="background:var(--t-conn)"></span>Connectivity</a>
+    <a class="jump" href="#sec-dns"><span class="jdot" style="background:var(--t-dns)"></span>DNS</a>
+    <a class="jump" href="#sec-session"><span class="jdot" style="background:var(--t-session)"></span>Sessions/NAT</a>
+    <a class="jump" href="#sec-firewall"><span class="jdot" style="background:var(--t-firewall)"></span>Firewall/ACL</a>
+    <a class="jump" href="#sec-vpn"><span class="jdot" style="background:var(--t-vpn)"></span>VPN/Tunnel</a>
+    <a class="jump" href="#sec-capture"><span class="jdot" style="background:var(--t-capture)"></span>Pkt Capture</a>
+    <a class="jump" href="#sec-ssh"><span class="jdot" style="background:var(--t-ssh)"></span>SSH/Serial</a>
+  </div>
+</div>
+
+<div id="legend">
+  <span class="legend-title">Type Key —</span>
+  <div class="leg"><div class="leg-sq" style="background:var(--t-interface)"></div>Interface</div>
+  <div class="leg"><div class="leg-sq" style="background:var(--t-routing)"></div>Routing</div>
+  <div class="leg"><div class="leg-sq" style="background:var(--t-dns)"></div>DNS</div>
+  <div class="leg"><div class="leg-sq" style="background:var(--t-arp)"></div>ARP/MAC</div>
+  <div class="leg"><div class="leg-sq" style="background:var(--t-conn)"></div>Connectivity</div>
+  <div class="leg"><div class="leg-sq" style="background:var(--t-vpn)"></div>VPN/Tunnel</div>
+  <div class="leg"><div class="leg-sq" style="background:var(--t-capture)"></div>Pkt Capture</div>
+  <div class="leg"><div class="leg-sq" style="background:var(--t-firewall)"></div>Firewall/ACL</div>
+  <div class="leg"><div class="leg-sq" style="background:var(--t-session)"></div>Sessions/NAT</div>
+  <div class="leg"><div class="leg-sq" style="background:var(--t-ssh)"></div>SSH/Serial</div>
+  <div class="leg" style="margin-left:10px;padding-left:10px;border-left:1px solid var(--border)">
+    <span class="badge badge-ps">PS</span>&nbsp;PowerShell &nbsp;<span class="badge badge-cmd">CMD</span>&nbsp;Command Prompt
+  </div>
+</div>
+
+<div id="grid-wrap"><div class="grid">
+
+<!-- ═══ CISCO (IOS + Meraki) ═══ -->
+<div class="col cisco" id="col-cisco">
+  <div class="col-head"><span class="ico">🔵</span><span class="name">Cisco</span></div>
+  <div class="sec t-interface" id="sec-interface">
+    <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">Interface</span><span class="sec-toggle">▾</span></div>
+    <ul class="cmds">
+      <li data-cmd="show interfaces"><span class="c">show interfaces</span><span class="d">All interface stats</span></li>
+      <li data-cmd="show ip interface brief"><span class="c">show ip interface brief</span><span class="d">IP & status summary</span></li>
+      <li data-cmd="show interfaces status"><span class="c">show interfaces status</span><span class="d">Speed/duplex/VLAN</span></li>
+      <li data-cmd="show interfaces counters"><span class="c">show interfaces &lt;int&gt; counters</span><span class="d">TX/RX error counters</span></li>
+      <li data-cmd="show vlan brief"><span class="c">show vlan brief</span><span class="d">VLAN table</span></li>
+      <li data-cmd="show spanning-tree"><span class="c">show spanning-tree</span><span class="d">STP topology</span></li>
+      <li data-cmd="show mac address-table"><span class="c">show mac address-table</span><span class="d">MAC forwarding table</span></li>
+    </ul>
+  </div>
+  <div class="sec t-routing" id="sec-routing">
+    <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">Routing</span><span class="sec-toggle">▾</span></div>
+    <ul class="cmds">
+      <li data-cmd="show ip route"><span class="c">show ip route</span><span class="d">Full routing table</span></li>
+      <li data-cmd="show ip route summary"><span class="c">show ip route summary</span><span class="d">Route count by protocol</span></li>
+      <li data-cmd="show ip bgp summary"><span class="c">show ip bgp summary</span><span class="d">BGP peer summary</span></li>
+      <li data-cmd="show ip ospf neighbor"><span class="c">show ip ospf neighbor</span><span class="d">OSPF adjacencies</span></li>
+      <li data-cmd="show ip eigrp neighbors"><span class="c">show ip eigrp neighbors</span><span class="d">EIGRP neighbor table</span></li>
+      <li data-cmd="show ip protocols"><span class="c">show ip protocols</span><span class="d">Routing protocols running</span></li>
+    </ul>
+  </div>
+  <div class="sec t-arp" id="sec-arp">
+    <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">ARP / MAC</span><span class="sec-toggle">▾</span></div>
+    <ul class="cmds">
+      <li data-cmd="show ip arp"><span class="c">show ip arp</span><span class="d">ARP table</span></li>
+      <li data-cmd="clear arp-cache"><span class="c">clear arp-cache</span><span class="d">Flush ARP cache</span></li>
+      <li data-cmd="show mac address-table dynamic"><span class="c">show mac address-table dynamic</span><span class="d">Dynamic MACs only</span></li>
+    </ul>
+  </div>
+  <div class="sec t-conn" id="sec-conn">
+    <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">Connectivity</span><span class="sec-toggle">▾</span></div>
+    <ul class="cmds">
+      <li data-cmd="ping"><span class="c">ping &lt;ip&gt;</span><span class="d">ICMP ping</span></li>
+      <li data-cmd="ping source"><span class="c">ping &lt;ip&gt; source &lt;int&gt;</span><span class="d">Ping from interface</span></li>
+      <li data-cmd="ping repeat 100"><span class="c">ping &lt;ip&gt; repeat 100</span><span class="d">Extended ping 100 pkts</span></li>
+      <li data-cmd="traceroute"><span class="c">traceroute &lt;ip&gt;</span><span class="d">Traceroute</span></li>
+      <li data-cmd="traceroute source"><span class="c">traceroute &lt;ip&gt; source &lt;ip&gt;</span><span class="d">Traceroute with source</span></li>
+    </ul>
+  </div>
+  <div class="sec t-dns" id="sec-dns">
+    <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">DNS</span><span class="sec-toggle">▾</span></div>
+    <ul class="cmds">
+      <li data-cmd="show hosts"><span class="c">show hosts</span><span class="d">DNS cache / static hosts</span></li>
+      <li data-cmd="show ip dns view"><span class="c">show ip dns view</span><span class="d">DNS view config</span></li>
+      <li data-cmd="nslookup"><span class="c">nslookup &lt;host&gt;</span><span class="d">DNS resolution test</span></li>
+    </ul>
+  </div>
+  <div class="sec t-session" id="sec-session">
+    <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">Sessions / NAT</span><span class="sec-toggle">▾</span></div>
+    <ul class="cmds">
+      <li data-cmd="show ip nat translations"><span class="c">show ip nat translations</span><span class="d">NAT table</span></li>
+      <li data-cmd="show ip nat statistics"><span class="c">show ip nat statistics</span><span class="d">NAT hit/miss counters</span></li>
+      <li data-cmd="clear ip nat translation"><span class="c">clear ip nat translation *</span><span class="d">Clear NAT table</span></li>
+      <li data-cmd="show tcp brief"><span class="c">show tcp brief</span><span class="d">Active TCP connections</span></li>
+      <li data-cmd="show clients meraki"><span class="c">show clients</span><span class="d">Connected clients (Meraki)</span></li>
+    </ul>
+  </div>
+  <div class="sec t-firewall" id="sec-firewall">
+    <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">Firewall / ACL</span><span class="sec-toggle">▾</span></div>
+    <ul class="cmds">
+      <li data-cmd="show ip access-lists"><span class="c">show ip access-lists</span><span class="d">All ACLs with hit counts</span></li>
+      <li data-cmd="show access-lists"><span class="c">show access-lists</span><span class="d">All ACL types</span></li>
+      <li data-cmd="show ip interface acl"><span class="c">show ip interface &lt;int&gt;</span><span class="d">ACL on interface</span></li>
+      <li data-cmd="show zone-pair security"><span class="c">show zone-pair security</span><span class="d">ZBF zone pairs</span></li>
+      <li data-cmd="show firewall rules meraki"><span class="c">show firewall rules</span><span class="d">L3 firewall rules (Meraki)</span></li>
+      <li data-cmd="show content-filtering meraki"><span class="c">show content-filtering</span><span class="d">Content filter (Meraki)</span></li>
+    </ul>
+  </div>
+  <div class="sec t-vpn" id="sec-vpn">
+    <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">VPN / Tunnel</span><span class="sec-toggle">▾</span></div>
+    <ul class="cmds">
+      <li data-cmd="show crypto isakmp sa"><span class="c">show crypto isakmp sa</span><span class="d">IKEv1 SA table</span></li>
+      <li data-cmd="show crypto ikev2 sa"><span class="c">show crypto ikev2 sa</span><span class="d">IKEv2 SA table</span></li>
+      <li data-cmd="show crypto ipsec sa"><span class="c">show crypto ipsec sa</span><span class="d">IPsec SA detail</span></li>
+      <li data-cmd="show interfaces tunnel"><span class="c">show interfaces tunnel &lt;n&gt;</span><span class="d">GRE tunnel status</span></li>
+      <li data-cmd="show vpn status meraki"><span class="c">show vpn status</span><span class="d">VPN tunnel states (Meraki)</span></li>
+      <li data-cmd="show client vpn meraki"><span class="c">show client vpn</span><span class="d">Client VPN sessions (Meraki)</span></li>
+    </ul>
+  </div>
+  <div class="sec t-capture" id="sec-capture">
+    <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">Packet Capture</span><span class="sec-toggle">▾</span></div>
+    <ul class="cmds">
+      <li data-cmd="debug ip packet"><span class="c">debug ip packet</span><span class="d">IP packet debug (caution)</span></li>
+      <li data-cmd="monitor capture interface both"><span class="c">monitor capture &lt;name&gt; interface &lt;int&gt; both</span><span class="d">EPC on interface</span></li>
+      <li data-cmd="monitor capture start"><span class="c">monitor capture &lt;name&gt; start</span><span class="d">Start EPC capture</span></li>
+      <li data-cmd="monitor capture stop"><span class="c">monitor capture &lt;name&gt; stop</span><span class="d">Stop EPC capture</span></li>
+      <li data-cmd="show monitor capture buffer brief"><span class="c">show monitor capture &lt;name&gt; buffer brief</span><span class="d">View captured packets</span></li>
+      <li data-cmd="packet-capture start interface meraki"><span class="c">packet-capture start interface &lt;int&gt;</span><span class="d">Capture on port (Meraki)</span></li>
+      <li data-cmd="packet-capture stop meraki"><span class="c">packet-capture stop</span><span class="d">Stop capture (Meraki)</span></li>
+    </ul>
+  </div>
+</div>
+
+<!-- ═══ FORTIGATE ═══ -->
+<div class="col forti" id="col-forti">
+  <div class="col-head"><span class="ico">🔥</span><span class="name">FortiGate</span></div>
+  <div class="sec t-interface">
+    <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">Interface</span><span class="sec-toggle">▾</span></div>
+    <ul class="cmds">
+      <li data-cmd="get system interface physical"><span class="c">get system interface physical</span><span class="d">Physical interface states</span></li>
+      <li data-cmd="diagnose ip address list"><span class="c">diagnose ip address list</span><span class="d">IP address assignments</span></li>
+      <li data-cmd="diagnose netlink interface list"><span class="c">diagnose netlink interface list</span><span class="d">Link layer details</span></li>
+      <li data-cmd="get hardware nic"><span class="c">get hardware nic &lt;port&gt;</span><span class="d">NIC counters & errors</span></li>
+      <li data-cmd="fnsysctl ifconfig"><span class="c">fnsysctl ifconfig &lt;port&gt;</span><span class="d">Low-level ifconfig</span></li>
+    </ul>
+  </div>
+  <div class="sec t-routing">
+    <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">Routing</span><span class="sec-toggle">▾</span></div>
+    <ul class="cmds">
+      <li data-cmd="get router info routing-table all"><span class="c">get router info routing-table all</span><span class="d">Full routing table</span></li>
+      <li data-cmd="get router info routing-table details"><span class="c">get router info routing-table details &lt;ip&gt;</span><span class="d">Route for prefix</span></li>
+      <li data-cmd="diagnose ip route list"><span class="c">diagnose ip route list</span><span class="d">Kernel route cache</span></li>
+      <li data-cmd="get router info bgp summary"><span class="c">get router info bgp summary</span><span class="d">BGP peer summary</span></li>
+      <li data-cmd="get router info ospf neighbor"><span class="c">get router info ospf neighbor</span><span class="d">OSPF adjacencies</span></li>
+    </ul>
+  </div>
+  <div class="sec t-arp">
+    <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">ARP / MAC</span><span class="sec-toggle">▾</span></div>
+    <ul class="cmds">
+      <li data-cmd="diagnose ip arp list"><span class="c">diagnose ip arp list</span><span class="d">ARP table</span></li>
+      <li data-cmd="diagnose netlink brctl list"><span class="c">diagnose netlink brctl list</span><span class="d">Bridge MAC table</span></li>
+    </ul>
+  </div>
+  <div class="sec t-conn">
+    <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">Connectivity</span><span class="sec-toggle">▾</span></div>
+    <ul class="cmds">
+      <li data-cmd="exec ping-options source"><span class="c">exec ping-options source &lt;ip&gt;</span><span class="d">Set ping source IP</span></li>
+      <li data-cmd="exec ping"><span class="c">exec ping &lt;host&gt;</span><span class="d">ICMP ping</span></li>
+      <li data-cmd="exec traceroute"><span class="c">exec traceroute &lt;host&gt;</span><span class="d">Traceroute</span></li>
+      <li data-cmd="exec ping6"><span class="c">exec ping6 &lt;host&gt;</span><span class="d">IPv6 ping</span></li>
+    </ul>
+  </div>
+  <div class="sec t-dns">
+    <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">DNS</span><span class="sec-toggle">▾</span></div>
+    <ul class="cmds">
+      <li data-cmd="get system dns"><span class="c">get system dns</span><span class="d">DNS server config</span></li>
+      <li data-cmd="exec nslookup"><span class="c">exec nslookup &lt;host&gt;</span><span class="d">DNS resolution test</span></li>
+      <li data-cmd="diagnose test app dnsproxy 6"><span class="c">diagnose test app dnsproxy 6</span><span class="d">DNS cache dump</span></li>
+    </ul>
+  </div>
+  <div class="sec t-session">
+    <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">Sessions / NAT</span><span class="sec-toggle">▾</span></div>
+    <ul class="cmds">
+      <li data-cmd="diagnose sys session list"><span class="c">diagnose sys session list</span><span class="d">Active session table</span></li>
+      <li data-cmd="diagnose sys session filter dstport"><span class="c">diagnose sys session filter dstport &lt;n&gt;</span><span class="d">Filter by port</span></li>
+      <li data-cmd="diagnose sys session stat"><span class="c">diagnose sys session stat</span><span class="d">Session statistics</span></li>
+      <li data-cmd="diagnose ip nat list"><span class="c">diagnose ip nat list</span><span class="d">NAT translation table</span></li>
+    </ul>
+  </div>
+  <div class="sec t-firewall">
+    <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">Firewall / Policy</span><span class="sec-toggle">▾</span></div>
+    <ul class="cmds">
+      <li data-cmd="diag debug flow filter addr"><span class="c">diag debug flow filter addr &lt;ip&gt;</span><span class="d">Flow debug filter</span></li>
+      <li data-cmd="diag debug flow show console en"><span class="c">diag debug flow show console en</span><span class="d">Enable output</span></li>
+      <li data-cmd="diag debug flow trace start 50"><span class="c">diag debug flow trace start 50</span><span class="d">Trace 50 packets</span></li>
+      <li data-cmd="diag debug enable"><span class="c">diag debug enable</span><span class="d">Activate debug</span></li>
+      <li data-cmd="diag debug reset"><span class="c">diag debug reset</span><span class="d">Clear all debug flags</span></li>
+    </ul>
+  </div>
+  <div class="sec t-vpn">
+    <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">VPN / Tunnel</span><span class="sec-toggle">▾</span></div>
+    <ul class="cmds">
+      <li data-cmd="diagnose vpn ike gateway list"><span class="c">diagnose vpn ike gateway list</span><span class="d">IKE gateways</span></li>
+      <li data-cmd="diagnose vpn tunnel list"><span class="c">diagnose vpn tunnel list</span><span class="d">IPsec tunnels</span></li>
+      <li data-cmd="diagnose debug app ike -1"><span class="c">diagnose debug app ike -1</span><span class="d">Full IKE debug</span></li>
+    </ul>
+  </div>
+  <div class="sec t-capture">
+    <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">Packet Capture</span><span class="sec-toggle">▾</span></div>
+    <ul class="cmds">
+      <li data-cmd="diag sniffer packet"><span class="c">diag sniffer packet &lt;int&gt; 'host &lt;ip&gt;' 4</span><span class="d">Capture on interface</span></li>
+      <li data-cmd="diag sniffer packet any"><span class="c">diag sniffer packet any '' 4 0 l</span><span class="d">All interfaces</span></li>
+    </ul>
+  </div>
+</div>
+
+<!-- ═══ UNIFI ═══ -->
+<div class="col unifi" id="col-unifi">
+  <div class="col-head"><span class="ico">🔷</span><span class="name">UniFi</span></div>
+  <div class="sec t-interface">
+    <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">Interface</span><span class="sec-toggle">▾</span></div>
+    <ul class="cmds">
+      <li data-cmd="ip addr show"><span class="c">ip addr show</span><span class="d">IP addresses per interface</span></li>
+      <li data-cmd="ip link show"><span class="c">ip link show</span><span class="d">Link state all interfaces</span></li>
+      <li data-cmd="ethtool"><span class="c">ethtool &lt;int&gt;</span><span class="d">Speed, duplex, link</span></li>
+      <li data-cmd="ethtool -S"><span class="c">ethtool -S &lt;int&gt;</span><span class="d">NIC stats & errors</span></li>
+      <li data-cmd="cat /proc/net/dev"><span class="c">cat /proc/net/dev</span><span class="d">Interface TX/RX counters</span></li>
+    </ul>
+  </div>
+  <div class="sec t-routing">
+    <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">Routing</span><span class="sec-toggle">▾</span></div>
+    <ul class="cmds">
+      <li data-cmd="ip route show"><span class="c">ip route show</span><span class="d">Routing table</span></li>
+      <li data-cmd="ip route get"><span class="c">ip route get &lt;ip&gt;</span><span class="d">Route for specific host</span></li>
+      <li data-cmd="netstat -rn"><span class="c">netstat -rn</span><span class="d">Numeric routing table</span></li>
+    </ul>
+  </div>
+  <div class="sec t-arp">
+    <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">ARP / MAC</span><span class="sec-toggle">▾</span></div>
+    <ul class="cmds">
+      <li data-cmd="arp -n"><span class="c">arp -n</span><span class="d">ARP table</span></li>
+      <li data-cmd="ip neigh show"><span class="c">ip neigh show</span><span class="d">Neighbour/ARP table</span></li>
+      <li data-cmd="bridge fdb show"><span class="c">bridge fdb show</span><span class="d">Bridge MAC table</span></li>
+    </ul>
+  </div>
+  <div class="sec t-conn">
+    <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">Connectivity</span><span class="sec-toggle">▾</span></div>
+    <ul class="cmds">
+      <li data-cmd="ping -I"><span class="c">ping -I &lt;int&gt; &lt;ip&gt;</span><span class="d">Ping via interface</span></li>
+      <li data-cmd="ping6"><span class="c">ping6 &lt;ip&gt;</span><span class="d">IPv6 ping</span></li>
+      <li data-cmd="traceroute"><span class="c">traceroute &lt;ip&gt;</span><span class="d">Traceroute</span></li>
+      <li data-cmd="mtr"><span class="c">mtr &lt;ip&gt;</span><span class="d">Live path + loss stats</span></li>
+    </ul>
+  </div>
+  <div class="sec t-dns">
+    <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">DNS</span><span class="sec-toggle">▾</span></div>
+    <ul class="cmds">
+      <li data-cmd="cat /etc/resolv.conf"><span class="c">cat /etc/resolv.conf</span><span class="d">DNS server config</span></li>
+      <li data-cmd="nslookup"><span class="c">nslookup &lt;host&gt;</span><span class="d">DNS query</span></li>
+      <li data-cmd="dig"><span class="c">dig &lt;host&gt;</span><span class="d">Detailed DNS lookup</span></li>
+    </ul>
+  </div>
+  <div class="sec t-vpn">
+    <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">VPN / Tunnel</span><span class="sec-toggle">▾</span></div>
+    <ul class="cmds">
+      <li data-cmd="ip tunnel show"><span class="c">ip tunnel show</span><span class="d">GRE/IPIP tunnels</span></li>
+      <li data-cmd="wg show"><span class="c">wg show</span><span class="d">WireGuard status</span></li>
+      <li data-cmd="wg show all transfer"><span class="c">wg show all transfer</span><span class="d">WireGuard transfer stats</span></li>
+    </ul>
+  </div>
+  <div class="sec t-session">
+    <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">Sessions</span><span class="sec-toggle">▾</span></div>
+    <ul class="cmds">
+      <li data-cmd="ss -tunap"><span class="c">ss -tunap</span><span class="d">All sockets with process</span></li>
+      <li data-cmd="netstat -an grep EST"><span class="c">netstat -an | grep EST</span><span class="d">Established TCP sessions</span></li>
+      <li data-cmd="conntrack -L"><span class="c">conntrack -L</span><span class="d">Netfilter session table</span></li>
+    </ul>
+  </div>
+  <div class="sec t-capture">
+    <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">Packet Capture</span><span class="sec-toggle">▾</span></div>
+    <ul class="cmds">
+      <li data-cmd="tcpdump -i"><span class="c">tcpdump -i &lt;int&gt; -n</span><span class="d">Capture on interface</span></li>
+      <li data-cmd="tcpdump -i any host"><span class="c">tcpdump -i any host &lt;ip&gt;</span><span class="d">Filter by host</span></li>
+      <li data-cmd="tcpdump -w"><span class="c">tcpdump -i &lt;int&gt; port &lt;n&gt; -w out.pcap</span><span class="d">Write to pcap file</span></li>
+    </ul>
+  </div>
+</div>
+
+<!-- ═══ HUAWEI ═══ -->
+<div class="col huawei" id="col-huawei">
+  <div class="col-head"><span class="ico">🔴</span><span class="name">Huawei</span></div>
+  <div class="sec t-interface">
+    <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">Interface</span><span class="sec-toggle">▾</span></div>
+    <ul class="cmds">
+      <li data-cmd="display ip interface brief"><span class="c">display ip interface brief</span><span class="d">IP summary per interface</span></li>
+      <li data-cmd="display interface"><span class="c">display interface &lt;type&gt;&lt;n&gt;</span><span class="d">Detailed stats & counters</span></li>
+      <li data-cmd="display interface brief"><span class="c">display interface brief</span><span class="d">All interface states</span></li>
+      <li data-cmd="display eth-trunk"><span class="c">display eth-trunk &lt;n&gt;</span><span class="d">LAG member status</span></li>
+      <li data-cmd="display port vlan"><span class="c">display port vlan &lt;int&gt;</span><span class="d">VLAN on port</span></li>
+    </ul>
+  </div>
+  <div class="sec t-routing">
+    <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">Routing</span><span class="sec-toggle">▾</span></div>
+    <ul class="cmds">
+      <li data-cmd="display ip routing-table"><span class="c">display ip routing-table</span><span class="d">Full routing table</span></li>
+      <li data-cmd="display bgp peer"><span class="c">display bgp peer</span><span class="d">BGP peer states</span></li>
+      <li data-cmd="display ospf peer brief"><span class="c">display ospf peer brief</span><span class="d">OSPF neighbor summary</span></li>
+      <li data-cmd="display isis peer"><span class="c">display isis peer</span><span class="d">IS-IS adjacencies</span></li>
+      <li data-cmd="display mpls lsp"><span class="c">display mpls lsp</span><span class="d">MPLS label paths</span></li>
+    </ul>
+  </div>
+  <div class="sec t-arp">
+    <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">ARP / MAC</span><span class="sec-toggle">▾</span></div>
+    <ul class="cmds">
+      <li data-cmd="display arp all"><span class="c">display arp all</span><span class="d">Full ARP table</span></li>
+      <li data-cmd="display arp"><span class="c">display arp &lt;ip&gt;</span><span class="d">ARP for specific IP</span></li>
+      <li data-cmd="display mac-address"><span class="c">display mac-address</span><span class="d">MAC forwarding table</span></li>
+    </ul>
+  </div>
+  <div class="sec t-conn">
+    <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">Connectivity</span><span class="sec-toggle">▾</span></div>
+    <ul class="cmds">
+      <li data-cmd="ping -a"><span class="c">ping -a &lt;src-ip&gt; &lt;dst-ip&gt;</span><span class="d">Ping with source IP</span></li>
+      <li data-cmd="ping ipv6"><span class="c">ping ipv6 &lt;ip&gt;</span><span class="d">IPv6 ping</span></li>
+      <li data-cmd="tracert"><span class="c">tracert &lt;ip&gt;</span><span class="d">Traceroute</span></li>
+      <li data-cmd="tracert -a"><span class="c">tracert -a &lt;src&gt; &lt;dst&gt;</span><span class="d">Tracert with source IP</span></li>
+    </ul>
+  </div>
+  <div class="sec t-dns">
+    <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">DNS</span><span class="sec-toggle">▾</span></div>
+    <ul class="cmds">
+      <li data-cmd="display dns server"><span class="c">display dns server</span><span class="d">Configured DNS servers</span></li>
+      <li data-cmd="display dns dynamic-host"><span class="c">display dns dynamic-host</span><span class="d">DNS cache</span></li>
+      <li data-cmd="nslookup host"><span class="c">nslookup host &lt;host&gt;</span><span class="d">DNS resolution test</span></li>
+    </ul>
+  </div>
+  <div class="sec t-session">
+    <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">Sessions / NAT</span><span class="sec-toggle">▾</span></div>
+    <ul class="cmds">
+      <li data-cmd="display firewall session table"><span class="c">display firewall session table</span><span class="d">Active session table</span></li>
+      <li data-cmd="display nat session all"><span class="c">display nat session all</span><span class="d">NAT translation table</span></li>
+      <li data-cmd="display nat statistics"><span class="c">display nat statistics</span><span class="d">NAT counters</span></li>
+    </ul>
+  </div>
+  <div class="sec t-firewall">
+    <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">Firewall / ACL</span><span class="sec-toggle">▾</span></div>
+    <ul class="cmds">
+      <li data-cmd="display acl all"><span class="c">display acl all</span><span class="d">All ACL definitions</span></li>
+      <li data-cmd="display firewall policy"><span class="c">display firewall policy</span><span class="d">Security policies</span></li>
+      <li data-cmd="display packet-filter"><span class="c">display packet-filter &lt;int&gt; inbound</span><span class="d">ACL applied inbound</span></li>
+    </ul>
+  </div>
+  <div class="sec t-vpn">
+    <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">VPN / Tunnel</span><span class="sec-toggle">▾</span></div>
+    <ul class="cmds">
+      <li data-cmd="display ike sa"><span class="c">display ike sa</span><span class="d">IKE security associations</span></li>
+      <li data-cmd="display ipsec sa brief"><span class="c">display ipsec sa brief</span><span class="d">IPsec SA summary</span></li>
+      <li data-cmd="display gre tunnel"><span class="c">display gre tunnel</span><span class="d">GRE tunnels</span></li>
+      <li data-cmd="display l2vpn vpws"><span class="c">display l2vpn vpws</span><span class="d">L2VPN instances</span></li>
+    </ul>
+  </div>
+  <div class="sec t-capture">
+    <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">Packet Capture</span><span class="sec-toggle">▾</span></div>
+    <ul class="cmds">
+      <li data-cmd="terminal debugging"><span class="c">terminal debugging</span><span class="d">Debug to terminal</span></li>
+      <li data-cmd="debugging ip icmp"><span class="c">debugging ip icmp</span><span class="d">ICMP debug output</span></li>
+      <li data-cmd="capture-packet interface"><span class="c">capture-packet interface &lt;int&gt;</span><span class="d">Capture on interface</span></li>
+    </ul>
+  </div>
+</div>
+
+<!-- ═══ WINDOWS ═══ -->
+<div class="col windows" id="col-windows">
+  <div class="col-head"><span class="ico">🪟</span><span class="name">Windows</span></div>
+  <div class="sec t-interface">
+    <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">Interface</span><span class="sec-toggle">▾</span></div>
+    <ul class="cmds">
+      <li data-cmd="ipconfig /all"><span class="c">ipconfig /all <span class="badge badge-cmd">CMD</span></span><span class="d">Full IP config + MAC</span></li>
+      <li data-cmd="netsh int ip show config"><span class="c">netsh int ip show config <span class="badge badge-cmd">CMD</span></span><span class="d">Interface IP config</span></li>
+      <li data-cmd="Get-NetAdapter"><span class="c">Get-NetAdapter <span class="badge badge-ps">PS</span></span><span class="d">Adapter list</span></li>
+      <li data-cmd="Get-NetIPAddress"><span class="c">Get-NetIPAddress <span class="badge badge-ps">PS</span></span><span class="d">All IP addresses</span></li>
+      <li data-cmd="ipconfig /release /renew"><span class="c">ipconfig /release &amp;&amp; /renew <span class="badge badge-cmd">CMD</span></span><span class="d">Release/renew DHCP</span></li>
+    </ul>
+  </div>
+  <div class="sec t-routing">
+    <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">Routing</span><span class="sec-toggle">▾</span></div>
+    <ul class="cmds">
+      <li data-cmd="route print"><span class="c">route print <span class="badge badge-cmd">CMD</span></span><span class="d">Full routing table</span></li>
+      <li data-cmd="route add"><span class="c">route add &lt;net&gt; mask &lt;m&gt; &lt;gw&gt; <span class="badge badge-cmd">CMD</span></span><span class="d">Add static route</span></li>
+      <li data-cmd="route delete"><span class="c">route delete &lt;net&gt; <span class="badge badge-cmd">CMD</span></span><span class="d">Remove route</span></li>
+      <li data-cmd="Get-NetRoute"><span class="c">Get-NetRoute <span class="badge badge-ps">PS</span></span><span class="d">Routing table</span></li>
+    </ul>
+  </div>
+  <div class="sec t-arp">
+    <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">ARP / MAC</span><span class="sec-toggle">▾</span></div>
+    <ul class="cmds">
+      <li data-cmd="arp -a"><span class="c">arp -a <span class="badge badge-cmd">CMD</span></span><span class="d">ARP cache</span></li>
+      <li data-cmd="arp -d"><span class="c">arp -d &lt;ip&gt; <span class="badge badge-cmd">CMD</span></span><span class="d">Delete ARP entry</span></li>
+      <li data-cmd="Get-NetNeighbor"><span class="c">Get-NetNeighbor <span class="badge badge-ps">PS</span></span><span class="d">ARP/NDP table</span></li>
+    </ul>
+  </div>
+  <div class="sec t-conn">
+    <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">Connectivity</span><span class="sec-toggle">▾</span></div>
+    <ul class="cmds">
+      <li data-cmd="ping -t"><span class="c">ping -t &lt;ip&gt; <span class="badge badge-cmd">CMD</span></span><span class="d">Continuous ping</span></li>
+      <li data-cmd="ping -S"><span class="c">ping -S &lt;src&gt; &lt;ip&gt; <span class="badge badge-cmd">CMD</span></span><span class="d">Ping from source IP</span></li>
+      <li data-cmd="tracert"><span class="c">tracert &lt;ip&gt; <span class="badge badge-cmd">CMD</span></span><span class="d">Traceroute</span></li>
+      <li data-cmd="pathping"><span class="c">pathping &lt;ip&gt; <span class="badge badge-cmd">CMD</span></span><span class="d">Path ping with loss stats</span></li>
+      <li data-cmd="Test-NetConnection"><span class="c">Test-NetConnection &lt;ip&gt; -Port &lt;n&gt; <span class="badge badge-ps">PS</span></span><span class="d">TCP port test</span></li>
+    </ul>
+  </div>
+  <div class="sec t-dns">
+    <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">DNS</span><span class="sec-toggle">▾</span></div>
+    <ul class="cmds">
+      <li data-cmd="ipconfig /flushdns"><span class="c">ipconfig /flushdns <span class="badge badge-cmd">CMD</span></span><span class="d">Flush DNS cache</span></li>
+      <li data-cmd="ipconfig /displaydns"><span class="c">ipconfig /displaydns <span class="badge badge-cmd">CMD</span></span><span class="d">Show cached entries</span></li>
+      <li data-cmd="nslookup"><span class="c">nslookup &lt;host&gt; <span class="badge badge-cmd">CMD</span></span><span class="d">DNS query</span></li>
+      <li data-cmd="Resolve-DnsName"><span class="c">Resolve-DnsName &lt;host&gt; <span class="badge badge-ps">PS</span></span><span class="d">Detailed DNS query</span></li>
+    </ul>
+  </div>
+  <div class="sec t-session">
+    <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">Sessions / Ports</span><span class="sec-toggle">▾</span></div>
+    <ul class="cmds">
+      <li data-cmd="netstat -ano"><span class="c">netstat -ano <span class="badge badge-cmd">CMD</span></span><span class="d">All connections + PID</span></li>
+      <li data-cmd="netstat -e"><span class="c">netstat -e <span class="badge badge-cmd">CMD</span></span><span class="d">Ethernet statistics</span></li>
+      <li data-cmd="netstat -s -p tcp"><span class="c">netstat -s -p tcp <span class="badge badge-cmd">CMD</span></span><span class="d">TCP protocol stats</span></li>
+      <li data-cmd="Get-NetTCPConnection"><span class="c">Get-NetTCPConnection <span class="badge badge-ps">PS</span></span><span class="d">TCP connections</span></li>
+    </ul>
+  </div>
+  <div class="sec t-firewall">
+    <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">Firewall</span><span class="sec-toggle">▾</span></div>
+    <ul class="cmds">
+      <li data-cmd="netsh advfirewall show allprofiles"><span class="c">netsh advfirewall show allprofiles <span class="badge badge-cmd">CMD</span></span><span class="d">All profile states</span></li>
+      <li data-cmd="netsh advfirewall firewall show rule name=all"><span class="c">netsh advfirewall firewall show rule name=all <span class="badge badge-cmd">CMD</span></span><span class="d">All rules</span></li>
+      <li data-cmd="Get-NetFirewallRule"><span class="c">Get-NetFirewallRule | where Enabled -eq True <span class="badge badge-ps">PS</span></span><span class="d">Active rules</span></li>
+    </ul>
+  </div>
+  <div class="sec t-capture">
+    <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">Packet Capture</span><span class="sec-toggle">▾</span></div>
+    <ul class="cmds">
+      <li data-cmd="netsh trace start capture=yes"><span class="c">netsh trace start capture=yes <span class="badge badge-cmd">CMD</span></span><span class="d">Built-in trace</span></li>
+      <li data-cmd="netsh trace stop"><span class="c">netsh trace stop <span class="badge badge-cmd">CMD</span></span><span class="d">Stop & save trace</span></li>
+      <li data-cmd="pktmon start --capture"><span class="c">pktmon start --capture <span class="badge badge-cmd">CMD</span></span><span class="d">Packet monitor (Win10+)</span></li>
+      <li data-cmd="pktmon stop"><span class="c">pktmon stop <span class="badge badge-cmd">CMD</span></span><span class="d">Stop pktmon</span></li>
+    </ul>
+  </div>
+</div>
+
+<!-- ═══ PUTTY ═══ -->
+<div class="col putty" id="col-putty">
+  <div class="col-head"><span class="ico">🖥️</span><span class="name">PuTTY</span></div>
+  <div class="sec t-ssh" id="sec-ssh">
+    <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">SSH Connection</span><span class="sec-toggle">▾</span></div>
+    <ul class="cmds">
+      <li data-cmd="putty.exe -ssh user@host"><span class="c">putty.exe -ssh &lt;user&gt;@&lt;host&gt;</span><span class="d">SSH to host as user</span></li>
+      <li data-cmd="putty.exe -ssh -P port"><span class="c">putty.exe -ssh &lt;host&gt; -P &lt;port&gt;</span><span class="d">SSH on custom port</span></li>
+      <li data-cmd="putty.exe -load session"><span class="c">putty.exe -load "Session Name"</span><span class="d">Load saved session</span></li>
+      <li data-cmd="putty.exe -i key.ppk"><span class="c">putty.exe -ssh &lt;host&gt; -i key.ppk</span><span class="d">Auth with PPK key file</span></li>
+      <li data-cmd="putty.exe -v -ssh verbose"><span class="c">putty.exe -v -ssh &lt;host&gt;</span><span class="d">Verbose SSH debug</span></li>
+    </ul>
+  </div>
+  <div class="sec t-ssh">
+    <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">Telnet / Serial</span><span class="sec-toggle">▾</span></div>
+    <ul class="cmds">
+      <li data-cmd="putty.exe -telnet host"><span class="c">putty.exe -telnet &lt;host&gt;</span><span class="d">Telnet connection</span></li>
+      <li data-cmd="putty.exe -serial COM3 9600"><span class="c">putty.exe -serial COM3 -sercfg 9600,8,n,1,N</span><span class="d">Serial @ 9600 baud</span></li>
+      <li data-cmd="putty.exe -serial COM3 115200"><span class="c">putty.exe -serial COM3 -sercfg 115200,8,n,1,N</span><span class="d">Serial @ 115200 baud</span></li>
+    </ul>
+  </div>
+  <div class="sec t-conn">
+    <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">Port Forwarding</span><span class="sec-toggle">▾</span></div>
+    <ul class="cmds">
+      <li data-cmd="putty.exe -L local port forward"><span class="c">putty.exe -ssh &lt;host&gt; -L &lt;lp&gt;:&lt;rh&gt;:&lt;rp&gt;</span><span class="d">Local port forward</span></li>
+      <li data-cmd="putty.exe -R remote port forward"><span class="c">putty.exe -ssh &lt;host&gt; -R &lt;rp&gt;:localhost:&lt;lp&gt;</span><span class="d">Remote port forward</span></li>
+      <li data-cmd="putty.exe -D socks5"><span class="c">putty.exe -ssh &lt;host&gt; -D &lt;port&gt;</span><span class="d">SOCKS5 dynamic proxy</span></li>
+      <li data-cmd="putty.exe -N tunnel only"><span class="c">putty.exe -ssh &lt;host&gt; -N</span><span class="d">Tunnel only, no shell</span></li>
+    </ul>
+  </div>
+  <div class="sec t-ssh">
+    <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">PLINK — CLI SSH</span><span class="sec-toggle">▾</span></div>
+    <ul class="cmds">
+      <li data-cmd="plink user@host"><span class="c">plink &lt;user&gt;@&lt;host&gt;</span><span class="d">Interactive SSH session</span></li>
+      <li data-cmd="plink remote command"><span class="c">plink &lt;user&gt;@&lt;host&gt; "show ip route"</span><span class="d">Run single remote cmd</span></li>
+      <li data-cmd="plink -batch -i key.ppk"><span class="c">plink -batch -i key.ppk &lt;host&gt; &lt;cmd&gt;</span><span class="d">Non-interactive with key</span></li>
+      <li data-cmd="plink -ssh -P 22"><span class="c">plink -ssh -P 22 &lt;host&gt;</span><span class="d">Specify SSH port</span></li>
+    </ul>
+  </div>
+  <div class="sec t-ssh">
+    <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">PSCP / PSFTP</span><span class="sec-toggle">▾</span></div>
+    <ul class="cmds">
+      <li data-cmd="pscp download file"><span class="c">pscp &lt;user&gt;@&lt;host&gt;:/remote/file .</span><span class="d">Download file via SCP</span></li>
+      <li data-cmd="pscp upload file"><span class="c">pscp localfile &lt;user&gt;@&lt;host&gt;:/path/</span><span class="d">Upload file via SCP</span></li>
+      <li data-cmd="pscp -r recursive upload"><span class="c">pscp -r localdir &lt;user&gt;@&lt;host&gt;:/path/</span><span class="d">Recursive upload</span></li>
+      <li data-cmd="psftp interactive session"><span class="c">psftp &lt;user&gt;@&lt;host&gt;</span><span class="d">Interactive SFTP session</span></li>
+    </ul>
+  </div>
+  <div class="sec t-ssh">
+    <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">Key Management</span><span class="sec-toggle">▾</span></div>
+    <ul class="cmds">
+      <li data-cmd="puttygen convert pem ppk"><span class="c">puttygen key.pem -o key.ppk</span><span class="d">Convert PEM to PPK</span></li>
+      <li data-cmd="puttygen generate rsa 4096"><span class="c">puttygen -t rsa -b 4096 -o new.ppk</span><span class="d">Generate 4096-bit RSA key</span></li>
+      <li data-cmd="puttygen export openssh"><span class="c">puttygen key.ppk -O public-openssh</span><span class="d">Export OpenSSH public key</span></li>
+      <li data-cmd="pageant load key agent"><span class="c">pageant key.ppk</span><span class="d">Load key into SSH agent</span></li>
+    </ul>
+  </div>
+  <div class="sec t-ssh">
+    <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">Session & Logging</span><span class="sec-toggle">▾</span></div>
+    <ul class="cmds">
+      <li data-cmd="putty.exe -load RouterA -l admin"><span class="c">putty.exe -load "RouterA" -l admin</span><span class="d">Session with user override</span></li>
+      <li data-cmd="putty.exe -logfile session log"><span class="c">putty.exe -logfile session.log -ssh &lt;host&gt;</span><span class="d">Log session to file</span></li>
+      <li data-cmd="putty.exe -sessionlog all"><span class="c">putty.exe -sessionlog all.log &lt;host&gt;</span><span class="d">Full session logging</span></li>
+      <li data-cmd="putty.exe -proxycmd plink jump host"><span class="c">putty.exe -proxycmd "plink -batch proxy %host %port" &lt;host&gt;</span><span class="d">Jump host via plink</span></li>
+    </ul>
+  </div>
+</div>
+
+</div></div>
+
+<footer>Network CLI Cheatsheet &nbsp;·&nbsp; Cisco · FortiGate · UniFi · Huawei · Windows · PuTTY</footer>
+<div id="toast"></div>
+
+<script>
+  function toggleSec(el){el.closest('.sec').classList.toggle('collapsed');}
+
+  document.querySelectorAll('.cmds li').forEach(li=>{
+    li.addEventListener('click',()=>{
+      const cEl=li.querySelector('.c');
+      let text=cEl.innerText.replace(/📋/g,'').replace(/\s*(PS|CMD)\s*/g,'').trim();
+      navigator.clipboard.writeText(text).then(()=>{
+        li.classList.add('copied');
+        setTimeout(()=>li.classList.remove('copied'),800);
+        showToast('Copied: '+text.substring(0,48)+(text.length>48?'…':''));
+      }).catch(()=>{
+        const ta=document.createElement('textarea');
+        ta.value=text;document.body.appendChild(ta);ta.select();
+        document.execCommand('copy');document.body.removeChild(ta);
+        showToast('Copied!');
+      });
+    });
+  });
+
+  function showToast(msg){
+    const t=document.getElementById('toast');
+    t.textContent=msg;t.classList.add('show');
+    clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),2000);
+  }
+
+  function escRe(s){return s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');}
+  function highlight(el,q){
+    el.querySelectorAll('mark').forEach(m=>m.replaceWith(document.createTextNode(m.textContent)));
+    el.normalize();
+    if(!q)return;
+    const re=new RegExp('('+escRe(q)+')','gi');
+    function walk(node){
+      if(node.nodeType===3&&node.textContent.match(re)){
+        const frag=document.createDocumentFragment();
+        node.textContent.split(re).forEach((p,i)=>{
+          if(i%2===1){const m=document.createElement('mark');m.textContent=p;frag.appendChild(m);}
+          else if(p)frag.appendChild(document.createTextNode(p));
+        });
+        node.replaceWith(frag);
+      }else if(node.nodeType===1&&node.nodeName!=='MARK'&&!node.classList.contains('badge')){
+        [...node.childNodes].forEach(walk);
+      }
+    }
+    walk(el);
+  }
+
+  document.getElementById('search').addEventListener('input',function(){
+    const q=this.value.trim().toLowerCase();
+    let count=0;
+    document.querySelectorAll('.col').forEach(col=>{
+      let colMatch=false;
+      col.querySelectorAll('.sec').forEach(sec=>{
+        let secMatch=false;
+        sec.querySelectorAll('.cmds li').forEach(li=>{
+          const txt=(li.dataset.cmd||'')+' '+li.textContent;
+          const match=!q||txt.toLowerCase().includes(q);
+          li.classList.toggle('hidden',!match);
+          if(match){secMatch=true;colMatch=true;count++;}
+          const c=li.querySelector('.c'),d=li.querySelector('.d');
+          if(match&&q){highlight(c,q);highlight(d,q);}
+          else{[c,d].forEach(e=>{e.querySelectorAll('mark').forEach(m=>m.replaceWith(document.createTextNode(m.textContent)));e.normalize();});}
+        });
+        sec.classList.toggle('all-hidden',!secMatch&&!!q);
+        if(q&&secMatch)sec.classList.remove('collapsed');
+      });
+      col.classList.toggle('no-match',!colMatch&&!!q);
+    });
+    document.getElementById('search-count').textContent=q?count+' command'+(count!==1?'s':'')+' matched':'';
+  });
+
+  function setColHeadTop(){
+    const h=document.getElementById('topbar').offsetHeight;
+    document.querySelectorAll('.col-head').forEach(el=>el.style.top=h+'px');
+    document.querySelectorAll('.col').forEach(el=>el.style.scrollMarginTop=(h+14)+'px');
+  }
+  setColHeadTop();
+  window.addEventListener('resize',setColHeadTop);
+
+  document.querySelectorAll('a[href^="#"]').forEach(a=>{
+    a.addEventListener('click',e=>{
+      const target=document.querySelector(a.getAttribute('href'));
+      if(!target)return;
+      e.preventDefault();
+      const off=document.getElementById('topbar').offsetHeight+14;
+      window.scrollTo({top:target.getBoundingClientRect().top+window.scrollY-off,behavior:'smooth'});
+    });
+  });
+</script>
+</body>
+</html>
