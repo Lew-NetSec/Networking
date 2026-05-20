@@ -45,7 +45,7 @@
   .jdot{width:7px;height:7px;border-radius:50%;flex-shrink:0;display:inline-block;}
 
   #legend{display:flex;flex-wrap:wrap;gap:5px 12px;align-items:center;margin:12px 20px;padding:9px 14px;background:var(--surface);border:1px solid var(--border);border-radius:6px;}
-  .legend-title{font-family:'Syne',sans-serif;font-size:0.7rem;font-weight:800;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted);margin-right:4px;}
+  .legend-title{font-family:'Orbitron',sans-serif;font-size:0.7rem;font-weight:800;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted);margin-right:4px;}
   .leg{display:flex;align-items:center;gap:5px;font-size:0.62rem;color:#8b949e;}
   .leg-sq{width:8px;height:8px;border-radius:2px;flex-shrink:0;}
 
@@ -110,7 +110,7 @@
   .t-ssh       .cmds li{border-color:rgba(212,168,67,0.18);}
 
   /* .d = description label — white on top */
-  .d{display:block;font-size:0.85rem;color:#ffffff;font-family:'Syne',sans-serif;font-weight:700;letter-spacing:0.04em;}
+  .d{display:block;font-size:0.85rem;color:#ffffff;font-family:'Rajdhani',sans-serif;font-weight:700;letter-spacing:0.04em;}
   /* .c = actual command — grey below */
   .c{display:block;color:#4ade80;font-size:0.8rem;word-break:break-all;margin-top:2px;}
   .cmds li:hover .d::after{content:' 📋';font-size:0.7rem;opacity:0.35;}
@@ -126,7 +126,7 @@
   .col.no-match{opacity:0.2;}
   mark{background:rgba(244,197,66,0.3);color:#f4c542;border-radius:2px;padding:0 1px;}
 
-  #toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(16px);background:#34d399;color:#080b0f;font-family:'Syne',sans-serif;font-size:0.7rem;font-weight:800;letter-spacing:0.1em;padding:7px 18px;border-radius:4px;opacity:0;transition:opacity 0.2s,transform 0.2s;pointer-events:none;z-index:1000;white-space:nowrap;}
+  #toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(16px);background:#34d399;color:#080b0f;font-family:'Orbitron',sans-serif;font-size:0.7rem;font-weight:800;letter-spacing:0.1em;padding:7px 18px;border-radius:4px;opacity:0;transition:opacity 0.2s,transform 0.2s;pointer-events:none;z-index:1000;white-space:nowrap;}
   #toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 
   footer{text-align:center;margin-top:30px;color:#1e2a35;font-size:0.7rem;letter-spacing:0.2em;text-transform:uppercase;}
@@ -176,7 +176,7 @@
   }
   #recent-tray.visible { display: block; }
   .recent-header {
-    font-family: 'Syne', sans-serif;
+    font-family:'Orbitron',sans-serif;
     font-size: 0.58rem;
     font-weight: 800;
     letter-spacing: 0.2em;
@@ -193,7 +193,7 @@
     cursor: pointer;
     background: none;
     border: none;
-    font-family: 'Syne', sans-serif;
+    font-family:'Orbitron',sans-serif;
     font-weight: 700;
     letter-spacing: 0.1em;
     text-transform: uppercase;
@@ -382,6 +382,16 @@
     .badge-cmd{background:#ddf0dd;color:#225522;border-color:#aca;}
     footer{color:#999;}
   }
+
+  .site-footer { margin-top: 4rem; border-top: 1px solid rgba(56,189,248,0.15); background: #060b14; }
+  .footer-inner { max-width: 1400px; margin: 0 auto; padding: 2rem 2.5rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; }
+  .footer-brand { font-family: 'Orbitron', sans-serif; font-size: 14px; font-weight: 700; color: #ffffff; letter-spacing: 3px; text-decoration: none; }
+  .footer-brand span { color: #38bdf8; }
+  .footer-links { display: flex; align-items: center; gap: 1.5rem; }
+  .footer-links a { display: flex; align-items: center; gap: 8px; font-family: 'Rajdhani', sans-serif; font-size: 13px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: #64748b; text-decoration: none; transition: color 0.2s; }
+  .footer-links a:hover { color: #38bdf8; }
+  .footer-links svg { width: 18px; height: 18px; fill: currentColor; }
+  .footer-copy { font-size: 12px; color: #334155; letter-spacing: 0.5px; }
 </style>
 <link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAK60lEQVR4nJVXaXBcV5X+zn1b761dbW2xvMqSrUSxSEyoitRUbJw4KCZJi0xiqACFU7iyFEXMTICZ7ibD1CypKcwwQzkQV8AxBj2cQCDBDF4kSOLEjjeili1blhftakndT72+fsudH5KIAcsw599779zvfPc75557HuGvGidwIKSCTZZ3U0V7O1eJrOs9ujgXYt2gvji4GoINIr4Y2obvv1NSlE1m+JLmpZbOi8Uw5wyR+a8RIBoBwgCiEfA5IOIgQAWuD8q2/ah3GXMqyju/4wOdRPqfBwp1cWEy1k0VTXGuxkI81ARSYxFexBzCwWfu0x/c12/kySnTX1cgLH56/2O3MI97hanrDYzhY7IoNjLFsdpMJAdkWYwVVbisQoGfsph1jsh5+nttpUOLobUd5aI8M15y6KElkxwAdRy4+uVCVj+WSXPbJYu+qeHJVGmJszw1pc3UrFv5HAetmhkef335nc3PTvQPXNXTiedS45kv61xYscxr3CZQxmTVK+91uOVK2Sm05kx5dV4vJAo2u5hKpk9ahfwF29KvVa1YU5kYG41LhdniAnPnfNubz0JVQVte6n2YTJ2bBuUMWyxoo9qgg1Ip59BUlt9+2xrRtpsPPnvbntt3/u7+Uy+/+35Vi1sqb1zaQYLw9fJVdf8hO71H3vhs7dmFHW56/L9rHS0f2Zgh566clvNIDhm2bU8qbkdFdiq+R8zN/Ly4ujipu6vOH/zCqjgBQMdL/fc4va4mtbN216aXTpVDLv4nl2S+WlkkQuLso8mc0WiY8JocLiNnNOmWPWZDvCbCWprL6L/PzCTPKaWBT4iyBDfTz+TGRn46Ojzb4qsM7BMcfsA2kZkahbusYtZbXvKGefzNZw/veWqUA6BP/vhSpSMzYWR0v7eyWvmEadq1Wh6b/MXOlFvkmm3CKph8NpvKThUKRq9LEX4/+cFo8tC/bdQ2b96lOO5u9Ezl7AZS3AFXkX+N7FE2aNeunXM4lVV5QxD0gjEti4IoOOUAN9BKTPqWUhjfK5ZU59/Y0Zyg+3f31vnzp5Meebk3xVlg35c2nCLCosfob7Xtu9+XXnyi1Vh43vpybFtiPP15Y+jSttJlS1220zP9xo7mhOhFPOssWenTpni1blo2MfAw5ywCcAAU6QYDunFxtMU7Y6AkN5awuGx7JVkZPfxU9Qw4gEiEQn1NhFAIAKB2kvXiE60GOKeQGpOAPkvPMVn2ueFftvxOczZ+7M2v3JUAADY+Id5yeTBfO5LkPGOLlXOAABFxIrL74uDRYNBMQ9/KufkeuXhfzdrAGWep+7sA8TBAiEZtVe201E6y1M7rmhQRB5ostbPTsi0zbqazLkYFSfQ4SsLhMAMA5lu9PGi4ir5qGvpD3kq/CwCiN5A0lcmJs1cHw4mBi7uG+9MsnTR9f0sqJsu7CQDKKoqqlKKy1hnuvlvrFQajkQgHAKY4hGO2YQYtJj8tOeVFAXguW6c4xRVmJjHEzQIHN0cBoE/FTZtZOwBwTiTLNSIrxFMjk6ccrd42EHGEOWP1a6XeyuWV067yKgcUxQCANnQzzC/saW+30HjUU15dEWKK835HcWk9CRIZej4LAJOx7psS6AYAIm7DupDP84Docn1NywuNm/de8AEAczBNv3L6cspd5OJykefT67e/72qPtNsACDRXibA0Ehj3KRI/lpuePm7m0hC43QAA8743Ns6pvb3dvuNfL9QIknOL7HAU9KmJX7kUvJ0bGMkCEbD2K1dMgZlZJjKSBB6Y0lMLgBwg3qmCoX9rKjmZ6M5nc4NO2TwviqQLIq0EIHyT0RzZG1hIVVmUmE2ivbRQwF35xLQs+3x3wONSeqJBM9QXIRYMBk3JoaTSUwnk4lPDV38YzF8P0hiaE0GS5aVE1MlETzETrILgcNYtufdnGzgHEOY3JKDGQpxzm0QyUsw2U5LMeu1C9lXFtCYAQG2McMY5F8rqy0vsgg4BLABwQiTyR5DIfBYUp+h1+FyHR46fuCw76D2H3y+QIhUDQKhvkUKMkt2pquztr6w7S/lsXyahXfYsqbg1Zea8C+hiBOCWbQ7mNa01n5MaQl0nfdHOqAbOCUQ8MicvT6X0ITOdzjy0pUIbkF1vk5m9J3Hy2qm28FExhhhrCx+liqZ2Dsw1ovksktpJFggwLKMpp6WZSJ6feFzilfn4XIwS2Q/sjcUVv5ubJgLMFWgF50fCAEUB3qeqBAAS43GHSzk929JR4BfyroJpXs4NPTXac6OmMW/hcISiUfAnj4w0jA5r9aVrGh0Or+B//e+WToe6ugSVyBIBwOV1DebTIEF2CLX1pc+D6EiEcx4Fn5uFAHBupATSJ8feGim3S2o8srvE1/bdK5+RBSojsnyAoJl5a4TbeU0RxJ6Dz6zSx6o+KQDftGfT1hd5wbpSSCUlZ2l1bL5EAQAiAAiz2m6XR3pq8MylgNcvNawPv14aiWAG4Q8dbTs3Ioq28JypjO0S+c9tmc2KpP89MaHeX+Yaz6XNOmdljSgQx/jZ/rsAHLtn+3r7xSe4YFvWxtmJxE6lsqQlndeOAIAagg0ALHz0qPjKZ2/LFJX6DhWVe9nwudGippbmr0ejZLe1zzckAIoiDsG0Pf9Z7lo9kzMSrz8a+AdTm96aGY8/rD5U1fDBnp/Ujp46uzcd1/KSIBkAp04i65HXRr7POI+lbcmSios8hx9bPRgOc7YwuDJ0t9vgnCRTe37F2ppcMq4ZpoUdH3/hxMaeYNAEYgIACIqY5bJiSLJQ45d0veMHZ1pKKxRj9XJf3+P7YxvanvxUqWTpB2DphlLulQHiD+7+Q4NLRsfksfM7lzQEbuWc/xj407uGgLkJVu0k60u/GYpMz9jh4YEh844tH8mOXpj5WNcjS3pDXVyQHUO3Z9OzpWDmsGUrM5lkqtIyWZUgKg6Jo4jbogTR7VOcgsddgu/s76hOPv6Ly2dFy/ivwbjh81f6n35ta00N55zourGdFo5LmINee/Z/nXdtbvrltcFMUPa44SsWJq6+d761JxocXrzWb2j06GvDh2QYvS9/qv6ZTbvPfEvwlcR+/Ujt/j//Z/iwgcyf+/Xrd0st/7zlD33HL3sUr+ODklvKmscuTbe989XWS6Fwr6xCNTF/lSICCs8vH6s6Kezevt4kImz71eRvvT5l9ffu9tc/0NW/dnQgNnTiaw9OA5yAxQiAgLDN7l1z9aMYnojX3Vrz1rVzIz/LZjKj3prKoJ7Iv/Dbp2//9YJiHwLNqRclsjfvetfnDpQdECThzLnjw//y6DrgMKsIGHn5coV7qfEnw8pfEpizTXs+qO2/6okvq0jft2x5yc6Mlj2HyYlv6F7/P8bjmXeEdE7tiQbz4JzCmAsMAMH/ef/jvvLinaIs7zvwQO0rL+w7Wpa6gGQ0GjRvmqsbvp1PBwD22IEL/27YoHXi2LcPXbRLuUX1Tiv37m++ce8YALQ+31PrcLsedvmdZTKz9775uebz9790qlHLydd6nlybRjjMEI0uemX/JYH54AsnAwA6XrkYJMIOCPKP1ni0t06fuOSXb1m5zGbKo2Z69gQk8cTB4ld7v6Pf6RgoXaH3jxRqkw558vhnVs3ebPeLK3AdmRDAVCL7vr1XnhRgVBjjY/vrAjyh5fxew+cpX6f1nc4jL2nOaiVXWzX7w2B9/qaY/y8C13st1G6oS9i2sa5u78iGqx01fTvgVJRf/uLkt6F22n/0mlMR161a1P4PhDo5mW7B9dsAAAAASUVORK5CYII=">
 <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
@@ -1412,5 +1422,17 @@
     document.getElementById('search-count').textContent = count + ' command' + (count !== 1 ? 's' : '') + ' matched';
   });
 </script>
+<footer class="site-footer">
+  <div class="footer-inner">
+    <a href="index.html" class="footer-brand">LEW<span>GALAXY</span></a>
+    <div class="footer-links">
+      <a href="https://lew-netsec.github.io" target="_blank">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+        GitHub
+      </a>
+    </div>
+    <span class="footer-copy">© 2025 LewGalaxy. All rights reserved.</span>
+  </div>
+</footer>
 </body>
 </html>
