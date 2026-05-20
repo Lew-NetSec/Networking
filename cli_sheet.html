@@ -91,8 +91,12 @@
   .t-ssh      {color:var(--t-ssh);      background:rgba(212,168,67,0.04);}
 
   .cmds{list-style:none;padding:2px 0 6px;}
-  .cmds li{padding:3px 9px 3px 11px;border-left:2px solid transparent;transition:background 0.1s;cursor:pointer;}
+  .cmds li{padding:3px 9px 3px 11px;border-left:2px solid transparent;transition:background 0.1s;cursor:pointer;display:flex;flex-direction:row;align-items:center;gap:6px;}
   .cmds li:hover{background:rgba(255,255,255,0.04);}
+  /* text block takes all available space */
+  .li-text{flex:1;min-width:0;}
+  /* row that holds description + star side by side */
+  .d-row{display:flex;align-items:center;justify-content:space-between;gap:6px;}
   .t-interface .cmds li{border-color:rgba(100,216,203,0.18);}
   .t-routing   .cmds li{border-color:rgba(244,197,66,0.18);}
   .t-dns       .cmds li{border-color:rgba(167,139,250,0.18);}
@@ -104,9 +108,9 @@
   .t-session   .cmds li{border-color:rgba(232,121,249,0.18);}
   .t-ssh       .cmds li{border-color:rgba(212,168,67,0.18);}
 
-  /* .d = description label — now shown FIRST in white */
+  /* .d = description label — white on top */
   .d{display:block;font-size:0.72rem;color:#ffffff;font-family:'Syne',sans-serif;font-weight:700;letter-spacing:0.04em;}
-  /* .c = actual command — shown SECOND in muted grey */
+  /* .c = actual command — grey below */
   .c{display:block;color:var(--muted);font-size:0.66rem;word-break:break-all;margin-top:2px;}
   .cmds li:hover .d::after{content:' 📋';font-size:0.58rem;opacity:0.35;}
   .cmds li.copied{background:rgba(52,211,153,0.1)!important;}
@@ -117,8 +121,7 @@
   .badge-cmd{background:rgba(106,191,105,0.15);color:#6abf69;border:1px solid rgba(106,191,105,0.25);}
 
   .cmds li.hidden{display:none;}
-  .sec.all-hidden{opacity:0.25;}
-  .sec.all-hidden .cmds li{display:none;}
+  .sec.all-hidden{display:none;}
   .col.no-match{opacity:0.2;}
   mark{background:rgba(244,197,66,0.3);color:#f4c542;border-radius:2px;padding:0 1px;}
 
@@ -129,20 +132,16 @@
 
   /* ══ STAR / FAVOURITE ══ */
   .star {
-    display: inline-block;
-    margin-left: 6px;
-    font-size: 0.7rem;
-    opacity: 0.2;
+    font-size: 1rem;
+    opacity: 0.18;
     cursor: pointer;
     transition: opacity 0.15s, transform 0.15s;
     flex-shrink: 0;
-    vertical-align: middle;
-    position: relative;
-    top: -1px;
     user-select: none;
+    line-height: 1;
   }
-  .cmds li:hover .star { opacity: 0.5; }
-  .star.starred { opacity: 1; filter: drop-shadow(0 0 4px gold); }
+  .cmds li:hover .star { opacity: 0.6; transform: scale(1.15); }
+  .star.starred { opacity: 1; filter: drop-shadow(0 0 6px #39ff14); color: #39ff14; }
   .fav-btn {
     font-family: 'Syne', sans-serif;
     font-size: 0.57rem;
@@ -457,94 +456,94 @@
   <div class="sec t-interface" id="sec-interface">
     <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">Interface</span><span class="sec-toggle">▾</span></div>
     <ul class="cmds">
-      <li data-cmd="show interfaces" data-desc="All interface stats"><span class="d">All interface stats</span><span class="c">show interfaces</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="show ip interface brief" data-desc="IP & status summary"><span class="d">IP & status summary</span><span class="c">show ip interface brief</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="show interfaces status" data-desc="Speed/duplex/VLAN"><span class="d">Speed/duplex/VLAN</span><span class="c">show interfaces status</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="show interfaces counters" data-desc="TX/RX error counters"><span class="d">TX/RX error counters</span><span class="c">show interfaces &lt;int&gt; counters</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="show vlan brief" data-desc="VLAN table"><span class="d">VLAN table</span><span class="c">show vlan brief</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="show spanning-tree" data-desc="STP topology"><span class="d">STP topology</span><span class="c">show spanning-tree</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="show mac address-table" data-desc="MAC forwarding table"><span class="d">MAC forwarding table</span><span class="c">show mac address-table</span><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="show interfaces" data-desc="All interface stats"><div class="li-text"><span class="d">All interface stats</span><span class="c">show interfaces</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="show ip interface brief" data-desc="IP & status summary"><div class="li-text"><span class="d">IP & status summary</span><span class="c">show ip interface brief</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="show interfaces status" data-desc="Speed/duplex/VLAN"><div class="li-text"><span class="d">Speed/duplex/VLAN</span><span class="c">show interfaces status</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="show interfaces counters" data-desc="TX/RX error counters"><div class="li-text"><span class="d">TX/RX error counters</span><span class="c">show interfaces &lt;int&gt; counters</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="show vlan brief" data-desc="VLAN table"><div class="li-text"><span class="d">VLAN table</span><span class="c">show vlan brief</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="show spanning-tree" data-desc="STP topology"><div class="li-text"><span class="d">STP topology</span><span class="c">show spanning-tree</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="show mac address-table" data-desc="MAC forwarding table"><div class="li-text"><span class="d">MAC forwarding table</span><span class="c">show mac address-table</span></div><span class="star" title="Favourite">☆</span></li>
     </ul>
   </div>
   <div class="sec t-routing" id="sec-routing">
     <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">Routing</span><span class="sec-toggle">▾</span></div>
     <ul class="cmds">
-      <li data-cmd="show ip route" data-desc="Full routing table"><span class="d">Full routing table</span><span class="c">show ip route</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="show ip route summary" data-desc="Route count by protocol"><span class="d">Route count by protocol</span><span class="c">show ip route summary</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="show ip bgp summary" data-desc="BGP peer summary"><span class="d">BGP peer summary</span><span class="c">show ip bgp summary</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="show ip ospf neighbor" data-desc="OSPF adjacencies"><span class="d">OSPF adjacencies</span><span class="c">show ip ospf neighbor</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="show ip eigrp neighbors" data-desc="EIGRP neighbor table"><span class="d">EIGRP neighbor table</span><span class="c">show ip eigrp neighbors</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="show ip protocols" data-desc="Routing protocols running"><span class="d">Routing protocols running</span><span class="c">show ip protocols</span><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="show ip route" data-desc="Full routing table"><div class="li-text"><span class="d">Full routing table</span><span class="c">show ip route</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="show ip route summary" data-desc="Route count by protocol"><div class="li-text"><span class="d">Route count by protocol</span><span class="c">show ip route summary</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="show ip bgp summary" data-desc="BGP peer summary"><div class="li-text"><span class="d">BGP peer summary</span><span class="c">show ip bgp summary</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="show ip ospf neighbor" data-desc="OSPF adjacencies"><div class="li-text"><span class="d">OSPF adjacencies</span><span class="c">show ip ospf neighbor</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="show ip eigrp neighbors" data-desc="EIGRP neighbor table"><div class="li-text"><span class="d">EIGRP neighbor table</span><span class="c">show ip eigrp neighbors</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="show ip protocols" data-desc="Routing protocols running"><div class="li-text"><span class="d">Routing protocols running</span><span class="c">show ip protocols</span></div><span class="star" title="Favourite">☆</span></li>
     </ul>
   </div>
   <div class="sec t-arp" id="sec-arp">
     <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">ARP / MAC</span><span class="sec-toggle">▾</span></div>
     <ul class="cmds">
-      <li data-cmd="show ip arp" data-desc="ARP table"><span class="d">ARP table</span><span class="c">show ip arp</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="clear arp-cache" data-desc="Flush ARP cache"><span class="d">Flush ARP cache</span><span class="c">clear arp-cache</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="show mac address-table dynamic" data-desc="Dynamic MACs only"><span class="d">Dynamic MACs only</span><span class="c">show mac address-table dynamic</span><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="show ip arp" data-desc="ARP table"><div class="li-text"><span class="d">ARP table</span><span class="c">show ip arp</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="clear arp-cache" data-desc="Flush ARP cache"><div class="li-text"><span class="d">Flush ARP cache</span><span class="c">clear arp-cache</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="show mac address-table dynamic" data-desc="Dynamic MACs only"><div class="li-text"><span class="d">Dynamic MACs only</span><span class="c">show mac address-table dynamic</span></div><span class="star" title="Favourite">☆</span></li>
     </ul>
   </div>
   <div class="sec t-conn" id="sec-conn">
     <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">Connectivity</span><span class="sec-toggle">▾</span></div>
     <ul class="cmds">
-      <li data-cmd="ping" data-desc="ICMP ping"><span class="d">ICMP ping</span><span class="c">ping &lt;ip&gt;</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="ping source" data-desc="Ping from interface"><span class="d">Ping from interface</span><span class="c">ping &lt;ip&gt; source &lt;int&gt;</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="ping repeat 100" data-desc="Extended ping 100 pkts"><span class="d">Extended ping 100 pkts</span><span class="c">ping &lt;ip&gt; repeat 100</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="traceroute" data-desc="Traceroute"><span class="d">Traceroute</span><span class="c">traceroute &lt;ip&gt;</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="traceroute source" data-desc="Traceroute with source"><span class="d">Traceroute with source</span><span class="c">traceroute &lt;ip&gt; source &lt;ip&gt;</span><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="ping" data-desc="ICMP ping"><div class="li-text"><span class="d">ICMP ping</span><span class="c">ping &lt;ip&gt;</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="ping source" data-desc="Ping from interface"><div class="li-text"><span class="d">Ping from interface</span><span class="c">ping &lt;ip&gt; source &lt;int&gt;</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="ping repeat 100" data-desc="Extended ping 100 pkts"><div class="li-text"><span class="d">Extended ping 100 pkts</span><span class="c">ping &lt;ip&gt; repeat 100</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="traceroute" data-desc="Traceroute"><div class="li-text"><span class="d">Traceroute</span><span class="c">traceroute &lt;ip&gt;</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="traceroute source" data-desc="Traceroute with source"><div class="li-text"><span class="d">Traceroute with source</span><span class="c">traceroute &lt;ip&gt; source &lt;ip&gt;</span></div><span class="star" title="Favourite">☆</span></li>
     </ul>
   </div>
   <div class="sec t-dns" id="sec-dns">
     <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">DNS</span><span class="sec-toggle">▾</span></div>
     <ul class="cmds">
-      <li data-cmd="show hosts" data-desc="DNS cache / static hosts"><span class="d">DNS cache / static hosts</span><span class="c">show hosts</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="show ip dns view" data-desc="DNS view config"><span class="d">DNS view config</span><span class="c">show ip dns view</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="nslookup" data-desc="DNS resolution test"><span class="d">DNS resolution test</span><span class="c">nslookup &lt;host&gt;</span><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="show hosts" data-desc="DNS cache / static hosts"><div class="li-text"><span class="d">DNS cache / static hosts</span><span class="c">show hosts</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="show ip dns view" data-desc="DNS view config"><div class="li-text"><span class="d">DNS view config</span><span class="c">show ip dns view</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="nslookup" data-desc="DNS resolution test"><div class="li-text"><span class="d">DNS resolution test</span><span class="c">nslookup &lt;host&gt;</span></div><span class="star" title="Favourite">☆</span></li>
     </ul>
   </div>
   <div class="sec t-session" id="sec-session">
     <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">Sessions / NAT</span><span class="sec-toggle">▾</span></div>
     <ul class="cmds">
-      <li data-cmd="show ip nat translations" data-desc="NAT table"><span class="d">NAT table</span><span class="c">show ip nat translations</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="show ip nat statistics" data-desc="NAT hit/miss counters"><span class="d">NAT hit/miss counters</span><span class="c">show ip nat statistics</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="clear ip nat translation" data-desc="Clear NAT table"><span class="d">Clear NAT table</span><span class="c">clear ip nat translation *</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="show tcp brief" data-desc="Active TCP connections"><span class="d">Active TCP connections</span><span class="c">show tcp brief</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="show clients meraki" data-desc="Connected clients (Meraki)"><span class="d">Connected clients (Meraki)</span><span class="c">show clients</span><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="show ip nat translations" data-desc="NAT table"><div class="li-text"><span class="d">NAT table</span><span class="c">show ip nat translations</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="show ip nat statistics" data-desc="NAT hit/miss counters"><div class="li-text"><span class="d">NAT hit/miss counters</span><span class="c">show ip nat statistics</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="clear ip nat translation" data-desc="Clear NAT table"><div class="li-text"><span class="d">Clear NAT table</span><span class="c">clear ip nat translation *</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="show tcp brief" data-desc="Active TCP connections"><div class="li-text"><span class="d">Active TCP connections</span><span class="c">show tcp brief</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="show clients meraki" data-desc="Connected clients (Meraki)"><div class="li-text"><span class="d">Connected clients (Meraki)</span><span class="c">show clients</span></div><span class="star" title="Favourite">☆</span></li>
     </ul>
   </div>
   <div class="sec t-firewall" id="sec-firewall">
     <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">Firewall / ACL</span><span class="sec-toggle">▾</span></div>
     <ul class="cmds">
-      <li data-cmd="show ip access-lists" data-desc="All ACLs with hit counts"><span class="d">All ACLs with hit counts</span><span class="c">show ip access-lists</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="show access-lists" data-desc="All ACL types"><span class="d">All ACL types</span><span class="c">show access-lists</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="show ip interface acl" data-desc="ACL on interface"><span class="d">ACL on interface</span><span class="c">show ip interface &lt;int&gt;</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="show zone-pair security" data-desc="ZBF zone pairs"><span class="d">ZBF zone pairs</span><span class="c">show zone-pair security</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="show firewall rules meraki" data-desc="L3 firewall rules (Meraki)"><span class="d">L3 firewall rules (Meraki)</span><span class="c">show firewall rules</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="show content-filtering meraki" data-desc="Content filter (Meraki)"><span class="d">Content filter (Meraki)</span><span class="c">show content-filtering</span><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="show ip access-lists" data-desc="All ACLs with hit counts"><div class="li-text"><span class="d">All ACLs with hit counts</span><span class="c">show ip access-lists</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="show access-lists" data-desc="All ACL types"><div class="li-text"><span class="d">All ACL types</span><span class="c">show access-lists</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="show ip interface acl" data-desc="ACL on interface"><div class="li-text"><span class="d">ACL on interface</span><span class="c">show ip interface &lt;int&gt;</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="show zone-pair security" data-desc="ZBF zone pairs"><div class="li-text"><span class="d">ZBF zone pairs</span><span class="c">show zone-pair security</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="show firewall rules meraki" data-desc="L3 firewall rules (Meraki)"><div class="li-text"><span class="d">L3 firewall rules (Meraki)</span><span class="c">show firewall rules</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="show content-filtering meraki" data-desc="Content filter (Meraki)"><div class="li-text"><span class="d">Content filter (Meraki)</span><span class="c">show content-filtering</span></div><span class="star" title="Favourite">☆</span></li>
     </ul>
   </div>
   <div class="sec t-vpn" id="sec-vpn">
     <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">VPN / Tunnel</span><span class="sec-toggle">▾</span></div>
     <ul class="cmds">
-      <li data-cmd="show crypto isakmp sa" data-desc="IKEv1 SA table"><span class="d">IKEv1 SA table</span><span class="c">show crypto isakmp sa</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="show crypto ikev2 sa" data-desc="IKEv2 SA table"><span class="d">IKEv2 SA table</span><span class="c">show crypto ikev2 sa</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="show crypto ipsec sa" data-desc="IPsec SA detail"><span class="d">IPsec SA detail</span><span class="c">show crypto ipsec sa</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="show interfaces tunnel" data-desc="GRE tunnel status"><span class="d">GRE tunnel status</span><span class="c">show interfaces tunnel &lt;n&gt;</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="show vpn status meraki" data-desc="VPN tunnel states (Meraki)"><span class="d">VPN tunnel states (Meraki)</span><span class="c">show vpn status</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="show client vpn meraki" data-desc="Client VPN sessions (Meraki)"><span class="d">Client VPN sessions (Meraki)</span><span class="c">show client vpn</span><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="show crypto isakmp sa" data-desc="IKEv1 SA table"><div class="li-text"><span class="d">IKEv1 SA table</span><span class="c">show crypto isakmp sa</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="show crypto ikev2 sa" data-desc="IKEv2 SA table"><div class="li-text"><span class="d">IKEv2 SA table</span><span class="c">show crypto ikev2 sa</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="show crypto ipsec sa" data-desc="IPsec SA detail"><div class="li-text"><span class="d">IPsec SA detail</span><span class="c">show crypto ipsec sa</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="show interfaces tunnel" data-desc="GRE tunnel status"><div class="li-text"><span class="d">GRE tunnel status</span><span class="c">show interfaces tunnel &lt;n&gt;</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="show vpn status meraki" data-desc="VPN tunnel states (Meraki)"><div class="li-text"><span class="d">VPN tunnel states (Meraki)</span><span class="c">show vpn status</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="show client vpn meraki" data-desc="Client VPN sessions (Meraki)"><div class="li-text"><span class="d">Client VPN sessions (Meraki)</span><span class="c">show client vpn</span></div><span class="star" title="Favourite">☆</span></li>
     </ul>
   </div>
   <div class="sec t-capture" id="sec-capture">
     <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">Packet Capture</span><span class="sec-toggle">▾</span></div>
     <ul class="cmds">
-      <li data-cmd="debug ip packet" data-desc="IP packet debug (caution)"><span class="d">IP packet debug (caution)</span><span class="c">debug ip packet</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="monitor capture interface both" data-desc="EPC on interface"><span class="d">EPC on interface</span><span class="c">monitor capture &lt;name&gt; interface &lt;int&gt; both</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="monitor capture start" data-desc="Start EPC capture"><span class="d">Start EPC capture</span><span class="c">monitor capture &lt;name&gt; start</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="monitor capture stop" data-desc="Stop EPC capture"><span class="d">Stop EPC capture</span><span class="c">monitor capture &lt;name&gt; stop</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="show monitor capture buffer brief" data-desc="View captured packets"><span class="d">View captured packets</span><span class="c">show monitor capture &lt;name&gt; buffer brief</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="packet-capture start interface meraki" data-desc="Capture on port (Meraki)"><span class="d">Capture on port (Meraki)</span><span class="c">packet-capture start interface &lt;int&gt;</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="packet-capture stop meraki" data-desc="Stop capture (Meraki)"><span class="d">Stop capture (Meraki)</span><span class="c">packet-capture stop</span><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="debug ip packet" data-desc="IP packet debug (caution)"><div class="li-text"><span class="d">IP packet debug (caution)</span><span class="c">debug ip packet</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="monitor capture interface both" data-desc="EPC on interface"><div class="li-text"><span class="d">EPC on interface</span><span class="c">monitor capture &lt;name&gt; interface &lt;int&gt; both</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="monitor capture start" data-desc="Start EPC capture"><div class="li-text"><span class="d">Start EPC capture</span><span class="c">monitor capture &lt;name&gt; start</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="monitor capture stop" data-desc="Stop EPC capture"><div class="li-text"><span class="d">Stop EPC capture</span><span class="c">monitor capture &lt;name&gt; stop</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="show monitor capture buffer brief" data-desc="View captured packets"><div class="li-text"><span class="d">View captured packets</span><span class="c">show monitor capture &lt;name&gt; buffer brief</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="packet-capture start interface meraki" data-desc="Capture on port (Meraki)"><div class="li-text"><span class="d">Capture on port (Meraki)</span><span class="c">packet-capture start interface &lt;int&gt;</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="packet-capture stop meraki" data-desc="Stop capture (Meraki)"><div class="li-text"><span class="d">Stop capture (Meraki)</span><span class="c">packet-capture stop</span></div><span class="star" title="Favourite">☆</span></li>
     </ul>
   </div>
 </div>
@@ -555,79 +554,79 @@
   <div class="sec t-interface">
     <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">Interface</span><span class="sec-toggle">▾</span></div>
     <ul class="cmds">
-      <li data-cmd="get system interface physical" data-desc="Physical interface states"><span class="d">Physical interface states</span><span class="c">get system interface physical</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="diagnose ip address list" data-desc="IP address assignments"><span class="d">IP address assignments</span><span class="c">diagnose ip address list</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="diagnose netlink interface list" data-desc="Link layer details"><span class="d">Link layer details</span><span class="c">diagnose netlink interface list</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="get hardware nic" data-desc="NIC counters & errors"><span class="d">NIC counters & errors</span><span class="c">get hardware nic &lt;port&gt;</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="fnsysctl ifconfig" data-desc="Low-level ifconfig"><span class="d">Low-level ifconfig</span><span class="c">fnsysctl ifconfig &lt;port&gt;</span><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="get system interface physical" data-desc="Physical interface states"><div class="li-text"><span class="d">Physical interface states</span><span class="c">get system interface physical</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="diagnose ip address list" data-desc="IP address assignments"><div class="li-text"><span class="d">IP address assignments</span><span class="c">diagnose ip address list</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="diagnose netlink interface list" data-desc="Link layer details"><div class="li-text"><span class="d">Link layer details</span><span class="c">diagnose netlink interface list</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="get hardware nic" data-desc="NIC counters & errors"><div class="li-text"><span class="d">NIC counters & errors</span><span class="c">get hardware nic &lt;port&gt;</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="fnsysctl ifconfig" data-desc="Low-level ifconfig"><div class="li-text"><span class="d">Low-level ifconfig</span><span class="c">fnsysctl ifconfig &lt;port&gt;</span></div><span class="star" title="Favourite">☆</span></li>
     </ul>
   </div>
   <div class="sec t-routing">
     <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">Routing</span><span class="sec-toggle">▾</span></div>
     <ul class="cmds">
-      <li data-cmd="get router info routing-table all" data-desc="Full routing table"><span class="d">Full routing table</span><span class="c">get router info routing-table all</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="get router info routing-table details" data-desc="Route for prefix"><span class="d">Route for prefix</span><span class="c">get router info routing-table details &lt;ip&gt;</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="diagnose ip route list" data-desc="Kernel route cache"><span class="d">Kernel route cache</span><span class="c">diagnose ip route list</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="get router info bgp summary" data-desc="BGP peer summary"><span class="d">BGP peer summary</span><span class="c">get router info bgp summary</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="get router info ospf neighbor" data-desc="OSPF adjacencies"><span class="d">OSPF adjacencies</span><span class="c">get router info ospf neighbor</span><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="get router info routing-table all" data-desc="Full routing table"><div class="li-text"><span class="d">Full routing table</span><span class="c">get router info routing-table all</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="get router info routing-table details" data-desc="Route for prefix"><div class="li-text"><span class="d">Route for prefix</span><span class="c">get router info routing-table details &lt;ip&gt;</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="diagnose ip route list" data-desc="Kernel route cache"><div class="li-text"><span class="d">Kernel route cache</span><span class="c">diagnose ip route list</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="get router info bgp summary" data-desc="BGP peer summary"><div class="li-text"><span class="d">BGP peer summary</span><span class="c">get router info bgp summary</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="get router info ospf neighbor" data-desc="OSPF adjacencies"><div class="li-text"><span class="d">OSPF adjacencies</span><span class="c">get router info ospf neighbor</span></div><span class="star" title="Favourite">☆</span></li>
     </ul>
   </div>
   <div class="sec t-arp">
     <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">ARP / MAC</span><span class="sec-toggle">▾</span></div>
     <ul class="cmds">
-      <li data-cmd="diagnose ip arp list" data-desc="ARP table"><span class="d">ARP table</span><span class="c">diagnose ip arp list</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="diagnose netlink brctl list" data-desc="Bridge MAC table"><span class="d">Bridge MAC table</span><span class="c">diagnose netlink brctl list</span><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="diagnose ip arp list" data-desc="ARP table"><div class="li-text"><span class="d">ARP table</span><span class="c">diagnose ip arp list</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="diagnose netlink brctl list" data-desc="Bridge MAC table"><div class="li-text"><span class="d">Bridge MAC table</span><span class="c">diagnose netlink brctl list</span></div><span class="star" title="Favourite">☆</span></li>
     </ul>
   </div>
   <div class="sec t-conn">
     <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">Connectivity</span><span class="sec-toggle">▾</span></div>
     <ul class="cmds">
-      <li data-cmd="exec ping-options source" data-desc="Set ping source IP"><span class="d">Set ping source IP</span><span class="c">exec ping-options source &lt;ip&gt;</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="exec ping" data-desc="ICMP ping"><span class="d">ICMP ping</span><span class="c">exec ping &lt;host&gt;</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="exec traceroute" data-desc="Traceroute"><span class="d">Traceroute</span><span class="c">exec traceroute &lt;host&gt;</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="exec ping6" data-desc="IPv6 ping"><span class="d">IPv6 ping</span><span class="c">exec ping6 &lt;host&gt;</span><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="exec ping-options source" data-desc="Set ping source IP"><div class="li-text"><span class="d">Set ping source IP</span><span class="c">exec ping-options source &lt;ip&gt;</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="exec ping" data-desc="ICMP ping"><div class="li-text"><span class="d">ICMP ping</span><span class="c">exec ping &lt;host&gt;</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="exec traceroute" data-desc="Traceroute"><div class="li-text"><span class="d">Traceroute</span><span class="c">exec traceroute &lt;host&gt;</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="exec ping6" data-desc="IPv6 ping"><div class="li-text"><span class="d">IPv6 ping</span><span class="c">exec ping6 &lt;host&gt;</span></div><span class="star" title="Favourite">☆</span></li>
     </ul>
   </div>
   <div class="sec t-dns">
     <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">DNS</span><span class="sec-toggle">▾</span></div>
     <ul class="cmds">
-      <li data-cmd="get system dns" data-desc="DNS server config"><span class="d">DNS server config</span><span class="c">get system dns</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="exec nslookup" data-desc="DNS resolution test"><span class="d">DNS resolution test</span><span class="c">exec nslookup &lt;host&gt;</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="diagnose test app dnsproxy 6" data-desc="DNS cache dump"><span class="d">DNS cache dump</span><span class="c">diagnose test app dnsproxy 6</span><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="get system dns" data-desc="DNS server config"><div class="li-text"><span class="d">DNS server config</span><span class="c">get system dns</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="exec nslookup" data-desc="DNS resolution test"><div class="li-text"><span class="d">DNS resolution test</span><span class="c">exec nslookup &lt;host&gt;</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="diagnose test app dnsproxy 6" data-desc="DNS cache dump"><div class="li-text"><span class="d">DNS cache dump</span><span class="c">diagnose test app dnsproxy 6</span></div><span class="star" title="Favourite">☆</span></li>
     </ul>
   </div>
   <div class="sec t-session">
     <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">Sessions / NAT</span><span class="sec-toggle">▾</span></div>
     <ul class="cmds">
-      <li data-cmd="diagnose sys session list" data-desc="Active session table"><span class="d">Active session table</span><span class="c">diagnose sys session list</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="diagnose sys session filter dstport" data-desc="Filter by port"><span class="d">Filter by port</span><span class="c">diagnose sys session filter dstport &lt;n&gt;</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="diagnose sys session stat" data-desc="Session statistics"><span class="d">Session statistics</span><span class="c">diagnose sys session stat</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="diagnose ip nat list" data-desc="NAT translation table"><span class="d">NAT translation table</span><span class="c">diagnose ip nat list</span><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="diagnose sys session list" data-desc="Active session table"><div class="li-text"><span class="d">Active session table</span><span class="c">diagnose sys session list</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="diagnose sys session filter dstport" data-desc="Filter by port"><div class="li-text"><span class="d">Filter by port</span><span class="c">diagnose sys session filter dstport &lt;n&gt;</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="diagnose sys session stat" data-desc="Session statistics"><div class="li-text"><span class="d">Session statistics</span><span class="c">diagnose sys session stat</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="diagnose ip nat list" data-desc="NAT translation table"><div class="li-text"><span class="d">NAT translation table</span><span class="c">diagnose ip nat list</span></div><span class="star" title="Favourite">☆</span></li>
     </ul>
   </div>
   <div class="sec t-firewall">
     <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">Firewall / Policy</span><span class="sec-toggle">▾</span></div>
     <ul class="cmds">
-      <li data-cmd="diag debug flow filter addr" data-desc="Flow debug filter"><span class="d">Flow debug filter</span><span class="c">diag debug flow filter addr &lt;ip&gt;</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="diag debug flow show console en" data-desc="Enable output"><span class="d">Enable output</span><span class="c">diag debug flow show console en</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="diag debug flow trace start 50" data-desc="Trace 50 packets"><span class="d">Trace 50 packets</span><span class="c">diag debug flow trace start 50</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="diag debug enable" data-desc="Activate debug"><span class="d">Activate debug</span><span class="c">diag debug enable</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="diag debug reset" data-desc="Clear all debug flags"><span class="d">Clear all debug flags</span><span class="c">diag debug reset</span><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="diag debug flow filter addr" data-desc="Flow debug filter"><div class="li-text"><span class="d">Flow debug filter</span><span class="c">diag debug flow filter addr &lt;ip&gt;</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="diag debug flow show console en" data-desc="Enable output"><div class="li-text"><span class="d">Enable output</span><span class="c">diag debug flow show console en</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="diag debug flow trace start 50" data-desc="Trace 50 packets"><div class="li-text"><span class="d">Trace 50 packets</span><span class="c">diag debug flow trace start 50</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="diag debug enable" data-desc="Activate debug"><div class="li-text"><span class="d">Activate debug</span><span class="c">diag debug enable</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="diag debug reset" data-desc="Clear all debug flags"><div class="li-text"><span class="d">Clear all debug flags</span><span class="c">diag debug reset</span></div><span class="star" title="Favourite">☆</span></li>
     </ul>
   </div>
   <div class="sec t-vpn">
     <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">VPN / Tunnel</span><span class="sec-toggle">▾</span></div>
     <ul class="cmds">
-      <li data-cmd="diagnose vpn ike gateway list" data-desc="IKE gateways"><span class="d">IKE gateways</span><span class="c">diagnose vpn ike gateway list</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="diagnose vpn tunnel list" data-desc="IPsec tunnels"><span class="d">IPsec tunnels</span><span class="c">diagnose vpn tunnel list</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="diagnose debug app ike -1" data-desc="Full IKE debug"><span class="d">Full IKE debug</span><span class="c">diagnose debug app ike -1</span><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="diagnose vpn ike gateway list" data-desc="IKE gateways"><div class="li-text"><span class="d">IKE gateways</span><span class="c">diagnose vpn ike gateway list</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="diagnose vpn tunnel list" data-desc="IPsec tunnels"><div class="li-text"><span class="d">IPsec tunnels</span><span class="c">diagnose vpn tunnel list</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="diagnose debug app ike -1" data-desc="Full IKE debug"><div class="li-text"><span class="d">Full IKE debug</span><span class="c">diagnose debug app ike -1</span></div><span class="star" title="Favourite">☆</span></li>
     </ul>
   </div>
   <div class="sec t-capture">
     <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">Packet Capture</span><span class="sec-toggle">▾</span></div>
     <ul class="cmds">
-      <li data-cmd="diag sniffer packet" data-desc="Capture on interface"><span class="d">Capture on interface</span><span class="c">diag sniffer packet &lt;int&gt; 'host &lt;ip&gt;' 4</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="diag sniffer packet any" data-desc="All interfaces"><span class="d">All interfaces</span><span class="c">diag sniffer packet any '' 4 0 l</span><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="diag sniffer packet" data-desc="Capture on interface"><div class="li-text"><span class="d">Capture on interface</span><span class="c">diag sniffer packet &lt;int&gt; 'host &lt;ip&gt;' 4</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="diag sniffer packet any" data-desc="All interfaces"><div class="li-text"><span class="d">All interfaces</span><span class="c">diag sniffer packet any '' 4 0 l</span></div><span class="star" title="Favourite">☆</span></li>
     </ul>
   </div>
 </div>
@@ -638,68 +637,68 @@
   <div class="sec t-interface">
     <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">Interface</span><span class="sec-toggle">▾</span></div>
     <ul class="cmds">
-      <li data-cmd="ip addr show" data-desc="IP addresses per interface"><span class="d">IP addresses per interface</span><span class="c">ip addr show</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="ip link show" data-desc="Link state all interfaces"><span class="d">Link state all interfaces</span><span class="c">ip link show</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="ethtool" data-desc="Speed, duplex, link"><span class="d">Speed, duplex, link</span><span class="c">ethtool &lt;int&gt;</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="ethtool -S" data-desc="NIC stats & errors"><span class="d">NIC stats & errors</span><span class="c">ethtool -S &lt;int&gt;</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="cat /proc/net/dev" data-desc="Interface TX/RX counters"><span class="d">Interface TX/RX counters</span><span class="c">cat /proc/net/dev</span><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="ip addr show" data-desc="IP addresses per interface"><div class="li-text"><span class="d">IP addresses per interface</span><span class="c">ip addr show</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="ip link show" data-desc="Link state all interfaces"><div class="li-text"><span class="d">Link state all interfaces</span><span class="c">ip link show</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="ethtool" data-desc="Speed, duplex, link"><div class="li-text"><span class="d">Speed, duplex, link</span><span class="c">ethtool &lt;int&gt;</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="ethtool -S" data-desc="NIC stats & errors"><div class="li-text"><span class="d">NIC stats & errors</span><span class="c">ethtool -S &lt;int&gt;</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="cat /proc/net/dev" data-desc="Interface TX/RX counters"><div class="li-text"><span class="d">Interface TX/RX counters</span><span class="c">cat /proc/net/dev</span></div><span class="star" title="Favourite">☆</span></li>
     </ul>
   </div>
   <div class="sec t-routing">
     <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">Routing</span><span class="sec-toggle">▾</span></div>
     <ul class="cmds">
-      <li data-cmd="ip route show" data-desc="Routing table"><span class="d">Routing table</span><span class="c">ip route show</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="ip route get" data-desc="Route for specific host"><span class="d">Route for specific host</span><span class="c">ip route get &lt;ip&gt;</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="netstat -rn" data-desc="Numeric routing table"><span class="d">Numeric routing table</span><span class="c">netstat -rn</span><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="ip route show" data-desc="Routing table"><div class="li-text"><span class="d">Routing table</span><span class="c">ip route show</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="ip route get" data-desc="Route for specific host"><div class="li-text"><span class="d">Route for specific host</span><span class="c">ip route get &lt;ip&gt;</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="netstat -rn" data-desc="Numeric routing table"><div class="li-text"><span class="d">Numeric routing table</span><span class="c">netstat -rn</span></div><span class="star" title="Favourite">☆</span></li>
     </ul>
   </div>
   <div class="sec t-arp">
     <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">ARP / MAC</span><span class="sec-toggle">▾</span></div>
     <ul class="cmds">
-      <li data-cmd="arp -n" data-desc="ARP table"><span class="d">ARP table</span><span class="c">arp -n</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="ip neigh show" data-desc="Neighbour/ARP table"><span class="d">Neighbour/ARP table</span><span class="c">ip neigh show</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="bridge fdb show" data-desc="Bridge MAC table"><span class="d">Bridge MAC table</span><span class="c">bridge fdb show</span><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="arp -n" data-desc="ARP table"><div class="li-text"><span class="d">ARP table</span><span class="c">arp -n</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="ip neigh show" data-desc="Neighbour/ARP table"><div class="li-text"><span class="d">Neighbour/ARP table</span><span class="c">ip neigh show</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="bridge fdb show" data-desc="Bridge MAC table"><div class="li-text"><span class="d">Bridge MAC table</span><span class="c">bridge fdb show</span></div><span class="star" title="Favourite">☆</span></li>
     </ul>
   </div>
   <div class="sec t-conn">
     <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">Connectivity</span><span class="sec-toggle">▾</span></div>
     <ul class="cmds">
-      <li data-cmd="ping -I" data-desc="Ping via interface"><span class="d">Ping via interface</span><span class="c">ping -I &lt;int&gt; &lt;ip&gt;</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="ping6" data-desc="IPv6 ping"><span class="d">IPv6 ping</span><span class="c">ping6 &lt;ip&gt;</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="traceroute" data-desc="Traceroute"><span class="d">Traceroute</span><span class="c">traceroute &lt;ip&gt;</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="mtr" data-desc="Live path + loss stats"><span class="d">Live path + loss stats</span><span class="c">mtr &lt;ip&gt;</span><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="ping -I" data-desc="Ping via interface"><div class="li-text"><span class="d">Ping via interface</span><span class="c">ping -I &lt;int&gt; &lt;ip&gt;</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="ping6" data-desc="IPv6 ping"><div class="li-text"><span class="d">IPv6 ping</span><span class="c">ping6 &lt;ip&gt;</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="traceroute" data-desc="Traceroute"><div class="li-text"><span class="d">Traceroute</span><span class="c">traceroute &lt;ip&gt;</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="mtr" data-desc="Live path + loss stats"><div class="li-text"><span class="d">Live path + loss stats</span><span class="c">mtr &lt;ip&gt;</span></div><span class="star" title="Favourite">☆</span></li>
     </ul>
   </div>
   <div class="sec t-dns">
     <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">DNS</span><span class="sec-toggle">▾</span></div>
     <ul class="cmds">
-      <li data-cmd="cat /etc/resolv.conf" data-desc="DNS server config"><span class="d">DNS server config</span><span class="c">cat /etc/resolv.conf</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="nslookup" data-desc="DNS query"><span class="d">DNS query</span><span class="c">nslookup &lt;host&gt;</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="dig" data-desc="Detailed DNS lookup"><span class="d">Detailed DNS lookup</span><span class="c">dig &lt;host&gt;</span><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="cat /etc/resolv.conf" data-desc="DNS server config"><div class="li-text"><span class="d">DNS server config</span><span class="c">cat /etc/resolv.conf</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="nslookup" data-desc="DNS query"><div class="li-text"><span class="d">DNS query</span><span class="c">nslookup &lt;host&gt;</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="dig" data-desc="Detailed DNS lookup"><div class="li-text"><span class="d">Detailed DNS lookup</span><span class="c">dig &lt;host&gt;</span></div><span class="star" title="Favourite">☆</span></li>
     </ul>
   </div>
   <div class="sec t-vpn">
     <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">VPN / Tunnel</span><span class="sec-toggle">▾</span></div>
     <ul class="cmds">
-      <li data-cmd="ip tunnel show" data-desc="GRE/IPIP tunnels"><span class="d">GRE/IPIP tunnels</span><span class="c">ip tunnel show</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="wg show" data-desc="WireGuard status"><span class="d">WireGuard status</span><span class="c">wg show</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="wg show all transfer" data-desc="WireGuard transfer stats"><span class="d">WireGuard transfer stats</span><span class="c">wg show all transfer</span><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="ip tunnel show" data-desc="GRE/IPIP tunnels"><div class="li-text"><span class="d">GRE/IPIP tunnels</span><span class="c">ip tunnel show</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="wg show" data-desc="WireGuard status"><div class="li-text"><span class="d">WireGuard status</span><span class="c">wg show</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="wg show all transfer" data-desc="WireGuard transfer stats"><div class="li-text"><span class="d">WireGuard transfer stats</span><span class="c">wg show all transfer</span></div><span class="star" title="Favourite">☆</span></li>
     </ul>
   </div>
   <div class="sec t-session">
     <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">Sessions</span><span class="sec-toggle">▾</span></div>
     <ul class="cmds">
-      <li data-cmd="ss -tunap" data-desc="All sockets with process"><span class="d">All sockets with process</span><span class="c">ss -tunap</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="netstat -an grep EST" data-desc="Established TCP sessions"><span class="d">Established TCP sessions</span><span class="c">netstat -an | grep EST</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="conntrack -L" data-desc="Netfilter session table"><span class="d">Netfilter session table</span><span class="c">conntrack -L</span><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="ss -tunap" data-desc="All sockets with process"><div class="li-text"><span class="d">All sockets with process</span><span class="c">ss -tunap</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="netstat -an grep EST" data-desc="Established TCP sessions"><div class="li-text"><span class="d">Established TCP sessions</span><span class="c">netstat -an | grep EST</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="conntrack -L" data-desc="Netfilter session table"><div class="li-text"><span class="d">Netfilter session table</span><span class="c">conntrack -L</span></div><span class="star" title="Favourite">☆</span></li>
     </ul>
   </div>
   <div class="sec t-capture">
     <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">Packet Capture</span><span class="sec-toggle">▾</span></div>
     <ul class="cmds">
-      <li data-cmd="tcpdump -i" data-desc="Capture on interface"><span class="d">Capture on interface</span><span class="c">tcpdump -i &lt;int&gt; -n</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="tcpdump -i any host" data-desc="Filter by host"><span class="d">Filter by host</span><span class="c">tcpdump -i any host &lt;ip&gt;</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="tcpdump -w" data-desc="Write to pcap file"><span class="d">Write to pcap file</span><span class="c">tcpdump -i &lt;int&gt; port &lt;n&gt; -w out.pcap</span><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="tcpdump -i" data-desc="Capture on interface"><div class="li-text"><span class="d">Capture on interface</span><span class="c">tcpdump -i &lt;int&gt; -n</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="tcpdump -i any host" data-desc="Filter by host"><div class="li-text"><span class="d">Filter by host</span><span class="c">tcpdump -i any host &lt;ip&gt;</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="tcpdump -w" data-desc="Write to pcap file"><div class="li-text"><span class="d">Write to pcap file</span><span class="c">tcpdump -i &lt;int&gt; port &lt;n&gt; -w out.pcap</span></div><span class="star" title="Favourite">☆</span></li>
     </ul>
   </div>
 </div>
@@ -710,79 +709,79 @@
   <div class="sec t-interface">
     <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">Interface</span><span class="sec-toggle">▾</span></div>
     <ul class="cmds">
-      <li data-cmd="display ip interface brief" data-desc="IP summary per interface"><span class="d">IP summary per interface</span><span class="c">display ip interface brief</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="display interface" data-desc="Detailed stats & counters"><span class="d">Detailed stats & counters</span><span class="c">display interface &lt;type&gt;&lt;n&gt;</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="display interface brief" data-desc="All interface states"><span class="d">All interface states</span><span class="c">display interface brief</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="display eth-trunk" data-desc="LAG member status"><span class="d">LAG member status</span><span class="c">display eth-trunk &lt;n&gt;</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="display port vlan" data-desc="VLAN on port"><span class="d">VLAN on port</span><span class="c">display port vlan &lt;int&gt;</span><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="display ip interface brief" data-desc="IP summary per interface"><div class="li-text"><span class="d">IP summary per interface</span><span class="c">display ip interface brief</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="display interface" data-desc="Detailed stats & counters"><div class="li-text"><span class="d">Detailed stats & counters</span><span class="c">display interface &lt;type&gt;&lt;n&gt;</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="display interface brief" data-desc="All interface states"><div class="li-text"><span class="d">All interface states</span><span class="c">display interface brief</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="display eth-trunk" data-desc="LAG member status"><div class="li-text"><span class="d">LAG member status</span><span class="c">display eth-trunk &lt;n&gt;</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="display port vlan" data-desc="VLAN on port"><div class="li-text"><span class="d">VLAN on port</span><span class="c">display port vlan &lt;int&gt;</span></div><span class="star" title="Favourite">☆</span></li>
     </ul>
   </div>
   <div class="sec t-routing">
     <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">Routing</span><span class="sec-toggle">▾</span></div>
     <ul class="cmds">
-      <li data-cmd="display ip routing-table" data-desc="Full routing table"><span class="d">Full routing table</span><span class="c">display ip routing-table</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="display bgp peer" data-desc="BGP peer states"><span class="d">BGP peer states</span><span class="c">display bgp peer</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="display ospf peer brief" data-desc="OSPF neighbor summary"><span class="d">OSPF neighbor summary</span><span class="c">display ospf peer brief</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="display isis peer" data-desc="IS-IS adjacencies"><span class="d">IS-IS adjacencies</span><span class="c">display isis peer</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="display mpls lsp" data-desc="MPLS label paths"><span class="d">MPLS label paths</span><span class="c">display mpls lsp</span><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="display ip routing-table" data-desc="Full routing table"><div class="li-text"><span class="d">Full routing table</span><span class="c">display ip routing-table</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="display bgp peer" data-desc="BGP peer states"><div class="li-text"><span class="d">BGP peer states</span><span class="c">display bgp peer</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="display ospf peer brief" data-desc="OSPF neighbor summary"><div class="li-text"><span class="d">OSPF neighbor summary</span><span class="c">display ospf peer brief</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="display isis peer" data-desc="IS-IS adjacencies"><div class="li-text"><span class="d">IS-IS adjacencies</span><span class="c">display isis peer</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="display mpls lsp" data-desc="MPLS label paths"><div class="li-text"><span class="d">MPLS label paths</span><span class="c">display mpls lsp</span></div><span class="star" title="Favourite">☆</span></li>
     </ul>
   </div>
   <div class="sec t-arp">
     <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">ARP / MAC</span><span class="sec-toggle">▾</span></div>
     <ul class="cmds">
-      <li data-cmd="display arp all" data-desc="Full ARP table"><span class="d">Full ARP table</span><span class="c">display arp all</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="display arp" data-desc="ARP for specific IP"><span class="d">ARP for specific IP</span><span class="c">display arp &lt;ip&gt;</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="display mac-address" data-desc="MAC forwarding table"><span class="d">MAC forwarding table</span><span class="c">display mac-address</span><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="display arp all" data-desc="Full ARP table"><div class="li-text"><span class="d">Full ARP table</span><span class="c">display arp all</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="display arp" data-desc="ARP for specific IP"><div class="li-text"><span class="d">ARP for specific IP</span><span class="c">display arp &lt;ip&gt;</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="display mac-address" data-desc="MAC forwarding table"><div class="li-text"><span class="d">MAC forwarding table</span><span class="c">display mac-address</span></div><span class="star" title="Favourite">☆</span></li>
     </ul>
   </div>
   <div class="sec t-conn">
     <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">Connectivity</span><span class="sec-toggle">▾</span></div>
     <ul class="cmds">
-      <li data-cmd="ping -a" data-desc="Ping with source IP"><span class="d">Ping with source IP</span><span class="c">ping -a &lt;src-ip&gt; &lt;dst-ip&gt;</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="ping ipv6" data-desc="IPv6 ping"><span class="d">IPv6 ping</span><span class="c">ping ipv6 &lt;ip&gt;</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="tracert" data-desc="Traceroute"><span class="d">Traceroute</span><span class="c">tracert &lt;ip&gt;</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="tracert -a" data-desc="Tracert with source IP"><span class="d">Tracert with source IP</span><span class="c">tracert -a &lt;src&gt; &lt;dst&gt;</span><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="ping -a" data-desc="Ping with source IP"><div class="li-text"><span class="d">Ping with source IP</span><span class="c">ping -a &lt;src-ip&gt; &lt;dst-ip&gt;</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="ping ipv6" data-desc="IPv6 ping"><div class="li-text"><span class="d">IPv6 ping</span><span class="c">ping ipv6 &lt;ip&gt;</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="tracert" data-desc="Traceroute"><div class="li-text"><span class="d">Traceroute</span><span class="c">tracert &lt;ip&gt;</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="tracert -a" data-desc="Tracert with source IP"><div class="li-text"><span class="d">Tracert with source IP</span><span class="c">tracert -a &lt;src&gt; &lt;dst&gt;</span></div><span class="star" title="Favourite">☆</span></li>
     </ul>
   </div>
   <div class="sec t-dns">
     <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">DNS</span><span class="sec-toggle">▾</span></div>
     <ul class="cmds">
-      <li data-cmd="display dns server" data-desc="Configured DNS servers"><span class="d">Configured DNS servers</span><span class="c">display dns server</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="display dns dynamic-host" data-desc="DNS cache"><span class="d">DNS cache</span><span class="c">display dns dynamic-host</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="nslookup host" data-desc="DNS resolution test"><span class="d">DNS resolution test</span><span class="c">nslookup host &lt;host&gt;</span><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="display dns server" data-desc="Configured DNS servers"><div class="li-text"><span class="d">Configured DNS servers</span><span class="c">display dns server</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="display dns dynamic-host" data-desc="DNS cache"><div class="li-text"><span class="d">DNS cache</span><span class="c">display dns dynamic-host</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="nslookup host" data-desc="DNS resolution test"><div class="li-text"><span class="d">DNS resolution test</span><span class="c">nslookup host &lt;host&gt;</span></div><span class="star" title="Favourite">☆</span></li>
     </ul>
   </div>
   <div class="sec t-session">
     <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">Sessions / NAT</span><span class="sec-toggle">▾</span></div>
     <ul class="cmds">
-      <li data-cmd="display firewall session table" data-desc="Active session table"><span class="d">Active session table</span><span class="c">display firewall session table</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="display nat session all" data-desc="NAT translation table"><span class="d">NAT translation table</span><span class="c">display nat session all</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="display nat statistics" data-desc="NAT counters"><span class="d">NAT counters</span><span class="c">display nat statistics</span><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="display firewall session table" data-desc="Active session table"><div class="li-text"><span class="d">Active session table</span><span class="c">display firewall session table</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="display nat session all" data-desc="NAT translation table"><div class="li-text"><span class="d">NAT translation table</span><span class="c">display nat session all</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="display nat statistics" data-desc="NAT counters"><div class="li-text"><span class="d">NAT counters</span><span class="c">display nat statistics</span></div><span class="star" title="Favourite">☆</span></li>
     </ul>
   </div>
   <div class="sec t-firewall">
     <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">Firewall / ACL</span><span class="sec-toggle">▾</span></div>
     <ul class="cmds">
-      <li data-cmd="display acl all" data-desc="All ACL definitions"><span class="d">All ACL definitions</span><span class="c">display acl all</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="display firewall policy" data-desc="Security policies"><span class="d">Security policies</span><span class="c">display firewall policy</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="display packet-filter" data-desc="ACL applied inbound"><span class="d">ACL applied inbound</span><span class="c">display packet-filter &lt;int&gt; inbound</span><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="display acl all" data-desc="All ACL definitions"><div class="li-text"><span class="d">All ACL definitions</span><span class="c">display acl all</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="display firewall policy" data-desc="Security policies"><div class="li-text"><span class="d">Security policies</span><span class="c">display firewall policy</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="display packet-filter" data-desc="ACL applied inbound"><div class="li-text"><span class="d">ACL applied inbound</span><span class="c">display packet-filter &lt;int&gt; inbound</span></div><span class="star" title="Favourite">☆</span></li>
     </ul>
   </div>
   <div class="sec t-vpn">
     <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">VPN / Tunnel</span><span class="sec-toggle">▾</span></div>
     <ul class="cmds">
-      <li data-cmd="display ike sa" data-desc="IKE security associations"><span class="d">IKE security associations</span><span class="c">display ike sa</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="display ipsec sa brief" data-desc="IPsec SA summary"><span class="d">IPsec SA summary</span><span class="c">display ipsec sa brief</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="display gre tunnel" data-desc="GRE tunnels"><span class="d">GRE tunnels</span><span class="c">display gre tunnel</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="display l2vpn vpws" data-desc="L2VPN instances"><span class="d">L2VPN instances</span><span class="c">display l2vpn vpws</span><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="display ike sa" data-desc="IKE security associations"><div class="li-text"><span class="d">IKE security associations</span><span class="c">display ike sa</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="display ipsec sa brief" data-desc="IPsec SA summary"><div class="li-text"><span class="d">IPsec SA summary</span><span class="c">display ipsec sa brief</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="display gre tunnel" data-desc="GRE tunnels"><div class="li-text"><span class="d">GRE tunnels</span><span class="c">display gre tunnel</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="display l2vpn vpws" data-desc="L2VPN instances"><div class="li-text"><span class="d">L2VPN instances</span><span class="c">display l2vpn vpws</span></div><span class="star" title="Favourite">☆</span></li>
     </ul>
   </div>
   <div class="sec t-capture">
     <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">Packet Capture</span><span class="sec-toggle">▾</span></div>
     <ul class="cmds">
-      <li data-cmd="terminal debugging" data-desc="Debug to terminal"><span class="d">Debug to terminal</span><span class="c">terminal debugging</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="debugging ip icmp" data-desc="ICMP debug output"><span class="d">ICMP debug output</span><span class="c">debugging ip icmp</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="capture-packet interface" data-desc="Capture on interface"><span class="d">Capture on interface</span><span class="c">capture-packet interface &lt;int&gt;</span><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="terminal debugging" data-desc="Debug to terminal"><div class="li-text"><span class="d">Debug to terminal</span><span class="c">terminal debugging</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="debugging ip icmp" data-desc="ICMP debug output"><div class="li-text"><span class="d">ICMP debug output</span><span class="c">debugging ip icmp</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="capture-packet interface" data-desc="Capture on interface"><div class="li-text"><span class="d">Capture on interface</span><span class="c">capture-packet interface &lt;int&gt;</span></div><span class="star" title="Favourite">☆</span></li>
     </ul>
   </div>
 </div>
@@ -793,73 +792,73 @@
   <div class="sec t-interface">
     <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">Interface</span><span class="sec-toggle">▾</span></div>
     <ul class="cmds">
-      <li data-cmd="ipconfig /all" data-desc="Full IP config + MAC"><span class="d">Full IP config + MAC</span><span class="c">ipconfig /all <span class="badge badge-cmd">CMD</span></span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="netsh int ip show config" data-desc="Interface IP config"><span class="d">Interface IP config</span><span class="c">netsh int ip show config <span class="badge badge-cmd">CMD</span></span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="Get-NetAdapter" data-desc="Adapter list"><span class="d">Adapter list</span><span class="c">Get-NetAdapter <span class="badge badge-ps">PS</span></span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="Get-NetIPAddress" data-desc="All IP addresses"><span class="d">All IP addresses</span><span class="c">Get-NetIPAddress <span class="badge badge-ps">PS</span></span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="ipconfig /release /renew" data-desc="Release/renew DHCP"><span class="d">Release/renew DHCP</span><span class="c">ipconfig /release &amp;&amp; /renew <span class="badge badge-cmd">CMD</span></span><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="ipconfig /all" data-desc="Full IP config + MAC"><div class="li-text"><span class="d">Full IP config + MAC</span><span class="c">ipconfig /all <span class="badge badge-cmd">CMD</span></span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="netsh int ip show config" data-desc="Interface IP config"><div class="li-text"><span class="d">Interface IP config</span><span class="c">netsh int ip show config <span class="badge badge-cmd">CMD</span></span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="Get-NetAdapter" data-desc="Adapter list"><div class="li-text"><span class="d">Adapter list</span><span class="c">Get-NetAdapter <span class="badge badge-ps">PS</span></span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="Get-NetIPAddress" data-desc="All IP addresses"><div class="li-text"><span class="d">All IP addresses</span><span class="c">Get-NetIPAddress <span class="badge badge-ps">PS</span></span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="ipconfig /release /renew" data-desc="Release/renew DHCP"><div class="li-text"><span class="d">Release/renew DHCP</span><span class="c">ipconfig /release &amp;&amp; /renew <span class="badge badge-cmd">CMD</span></span></div><span class="star" title="Favourite">☆</span></li>
     </ul>
   </div>
   <div class="sec t-routing">
     <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">Routing</span><span class="sec-toggle">▾</span></div>
     <ul class="cmds">
-      <li data-cmd="route print" data-desc="Full routing table"><span class="d">Full routing table</span><span class="c">route print <span class="badge badge-cmd">CMD</span></span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="route add" data-desc="Add static route"><span class="d">Add static route</span><span class="c">route add &lt;net&gt; mask &lt;m&gt; &lt;gw&gt; <span class="badge badge-cmd">CMD</span></span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="route delete" data-desc="Remove route"><span class="d">Remove route</span><span class="c">route delete &lt;net&gt; <span class="badge badge-cmd">CMD</span></span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="Get-NetRoute" data-desc="Routing table"><span class="d">Routing table</span><span class="c">Get-NetRoute <span class="badge badge-ps">PS</span></span><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="route print" data-desc="Full routing table"><div class="li-text"><span class="d">Full routing table</span><span class="c">route print <span class="badge badge-cmd">CMD</span></span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="route add" data-desc="Add static route"><div class="li-text"><span class="d">Add static route</span><span class="c">route add &lt;net&gt; mask &lt;m&gt; &lt;gw&gt; <span class="badge badge-cmd">CMD</span></span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="route delete" data-desc="Remove route"><div class="li-text"><span class="d">Remove route</span><span class="c">route delete &lt;net&gt; <span class="badge badge-cmd">CMD</span></span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="Get-NetRoute" data-desc="Routing table"><div class="li-text"><span class="d">Routing table</span><span class="c">Get-NetRoute <span class="badge badge-ps">PS</span></span></div><span class="star" title="Favourite">☆</span></li>
     </ul>
   </div>
   <div class="sec t-arp">
     <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">ARP / MAC</span><span class="sec-toggle">▾</span></div>
     <ul class="cmds">
-      <li data-cmd="arp -a" data-desc="ARP cache"><span class="d">ARP cache</span><span class="c">arp -a <span class="badge badge-cmd">CMD</span></span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="arp -d" data-desc="Delete ARP entry"><span class="d">Delete ARP entry</span><span class="c">arp -d &lt;ip&gt; <span class="badge badge-cmd">CMD</span></span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="Get-NetNeighbor" data-desc="ARP/NDP table"><span class="d">ARP/NDP table</span><span class="c">Get-NetNeighbor <span class="badge badge-ps">PS</span></span><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="arp -a" data-desc="ARP cache"><div class="li-text"><span class="d">ARP cache</span><span class="c">arp -a <span class="badge badge-cmd">CMD</span></span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="arp -d" data-desc="Delete ARP entry"><div class="li-text"><span class="d">Delete ARP entry</span><span class="c">arp -d &lt;ip&gt; <span class="badge badge-cmd">CMD</span></span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="Get-NetNeighbor" data-desc="ARP/NDP table"><div class="li-text"><span class="d">ARP/NDP table</span><span class="c">Get-NetNeighbor <span class="badge badge-ps">PS</span></span></div><span class="star" title="Favourite">☆</span></li>
     </ul>
   </div>
   <div class="sec t-conn">
     <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">Connectivity</span><span class="sec-toggle">▾</span></div>
     <ul class="cmds">
-      <li data-cmd="ping -t" data-desc="Continuous ping"><span class="d">Continuous ping</span><span class="c">ping -t &lt;ip&gt; <span class="badge badge-cmd">CMD</span></span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="ping -S" data-desc="Ping from source IP"><span class="d">Ping from source IP</span><span class="c">ping -S &lt;src&gt; &lt;ip&gt; <span class="badge badge-cmd">CMD</span></span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="tracert" data-desc="Traceroute"><span class="d">Traceroute</span><span class="c">tracert &lt;ip&gt; <span class="badge badge-cmd">CMD</span></span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="pathping" data-desc="Path ping with loss stats"><span class="d">Path ping with loss stats</span><span class="c">pathping &lt;ip&gt; <span class="badge badge-cmd">CMD</span></span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="Test-NetConnection" data-desc="TCP port test"><span class="d">TCP port test</span><span class="c">Test-NetConnection &lt;ip&gt; -Port &lt;n&gt; <span class="badge badge-ps">PS</span></span><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="ping -t" data-desc="Continuous ping"><div class="li-text"><span class="d">Continuous ping</span><span class="c">ping -t &lt;ip&gt; <span class="badge badge-cmd">CMD</span></span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="ping -S" data-desc="Ping from source IP"><div class="li-text"><span class="d">Ping from source IP</span><span class="c">ping -S &lt;src&gt; &lt;ip&gt; <span class="badge badge-cmd">CMD</span></span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="tracert" data-desc="Traceroute"><div class="li-text"><span class="d">Traceroute</span><span class="c">tracert &lt;ip&gt; <span class="badge badge-cmd">CMD</span></span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="pathping" data-desc="Path ping with loss stats"><div class="li-text"><span class="d">Path ping with loss stats</span><span class="c">pathping &lt;ip&gt; <span class="badge badge-cmd">CMD</span></span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="Test-NetConnection" data-desc="TCP port test"><div class="li-text"><span class="d">TCP port test</span><span class="c">Test-NetConnection &lt;ip&gt; -Port &lt;n&gt; <span class="badge badge-ps">PS</span></span></div><span class="star" title="Favourite">☆</span></li>
     </ul>
   </div>
   <div class="sec t-dns">
     <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">DNS</span><span class="sec-toggle">▾</span></div>
     <ul class="cmds">
-      <li data-cmd="ipconfig /flushdns" data-desc="Flush DNS cache"><span class="d">Flush DNS cache</span><span class="c">ipconfig /flushdns <span class="badge badge-cmd">CMD</span></span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="ipconfig /displaydns" data-desc="Show cached entries"><span class="d">Show cached entries</span><span class="c">ipconfig /displaydns <span class="badge badge-cmd">CMD</span></span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="nslookup" data-desc="DNS query"><span class="d">DNS query</span><span class="c">nslookup &lt;host&gt; <span class="badge badge-cmd">CMD</span></span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="Resolve-DnsName" data-desc="Detailed DNS query"><span class="d">Detailed DNS query</span><span class="c">Resolve-DnsName &lt;host&gt; <span class="badge badge-ps">PS</span></span><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="ipconfig /flushdns" data-desc="Flush DNS cache"><div class="li-text"><span class="d">Flush DNS cache</span><span class="c">ipconfig /flushdns <span class="badge badge-cmd">CMD</span></span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="ipconfig /displaydns" data-desc="Show cached entries"><div class="li-text"><span class="d">Show cached entries</span><span class="c">ipconfig /displaydns <span class="badge badge-cmd">CMD</span></span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="nslookup" data-desc="DNS query"><div class="li-text"><span class="d">DNS query</span><span class="c">nslookup &lt;host&gt; <span class="badge badge-cmd">CMD</span></span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="Resolve-DnsName" data-desc="Detailed DNS query"><div class="li-text"><span class="d">Detailed DNS query</span><span class="c">Resolve-DnsName &lt;host&gt; <span class="badge badge-ps">PS</span></span></div><span class="star" title="Favourite">☆</span></li>
     </ul>
   </div>
   <div class="sec t-session">
     <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">Sessions / Ports</span><span class="sec-toggle">▾</span></div>
     <ul class="cmds">
-      <li data-cmd="netstat -ano" data-desc="All connections + PID"><span class="d">All connections + PID</span><span class="c">netstat -ano <span class="badge badge-cmd">CMD</span></span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="netstat -e" data-desc="Ethernet statistics"><span class="d">Ethernet statistics</span><span class="c">netstat -e <span class="badge badge-cmd">CMD</span></span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="netstat -s -p tcp" data-desc="TCP protocol stats"><span class="d">TCP protocol stats</span><span class="c">netstat -s -p tcp <span class="badge badge-cmd">CMD</span></span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="Get-NetTCPConnection" data-desc="TCP connections"><span class="d">TCP connections</span><span class="c">Get-NetTCPConnection <span class="badge badge-ps">PS</span></span><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="netstat -ano" data-desc="All connections + PID"><div class="li-text"><span class="d">All connections + PID</span><span class="c">netstat -ano <span class="badge badge-cmd">CMD</span></span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="netstat -e" data-desc="Ethernet statistics"><div class="li-text"><span class="d">Ethernet statistics</span><span class="c">netstat -e <span class="badge badge-cmd">CMD</span></span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="netstat -s -p tcp" data-desc="TCP protocol stats"><div class="li-text"><span class="d">TCP protocol stats</span><span class="c">netstat -s -p tcp <span class="badge badge-cmd">CMD</span></span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="Get-NetTCPConnection" data-desc="TCP connections"><div class="li-text"><span class="d">TCP connections</span><span class="c">Get-NetTCPConnection <span class="badge badge-ps">PS</span></span></div><span class="star" title="Favourite">☆</span></li>
     </ul>
   </div>
   <div class="sec t-firewall">
     <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">Firewall</span><span class="sec-toggle">▾</span></div>
     <ul class="cmds">
-      <li data-cmd="netsh advfirewall show allprofiles" data-desc="All profile states"><span class="d">All profile states</span><span class="c">netsh advfirewall show allprofiles <span class="badge badge-cmd">CMD</span></span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="netsh advfirewall firewall show rule name=all" data-desc="All rules"><span class="d">All rules</span><span class="c">netsh advfirewall firewall show rule name=all <span class="badge badge-cmd">CMD</span></span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="Get-NetFirewallRule" data-desc="Active rules"><span class="d">Active rules</span><span class="c">Get-NetFirewallRule | where Enabled -eq True <span class="badge badge-ps">PS</span></span><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="netsh advfirewall show allprofiles" data-desc="All profile states"><div class="li-text"><span class="d">All profile states</span><span class="c">netsh advfirewall show allprofiles <span class="badge badge-cmd">CMD</span></span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="netsh advfirewall firewall show rule name=all" data-desc="All rules"><div class="li-text"><span class="d">All rules</span><span class="c">netsh advfirewall firewall show rule name=all <span class="badge badge-cmd">CMD</span></span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="Get-NetFirewallRule" data-desc="Active rules"><div class="li-text"><span class="d">Active rules</span><span class="c">Get-NetFirewallRule | where Enabled -eq True <span class="badge badge-ps">PS</span></span></div><span class="star" title="Favourite">☆</span></li>
     </ul>
   </div>
   <div class="sec t-capture">
     <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">Packet Capture</span><span class="sec-toggle">▾</span></div>
     <ul class="cmds">
-      <li data-cmd="netsh trace start capture=yes" data-desc="Built-in trace"><span class="d">Built-in trace</span><span class="c">netsh trace start capture=yes <span class="badge badge-cmd">CMD</span></span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="netsh trace stop" data-desc="Stop & save trace"><span class="d">Stop & save trace</span><span class="c">netsh trace stop <span class="badge badge-cmd">CMD</span></span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="pktmon start --capture" data-desc="Packet monitor (Win10+)"><span class="d">Packet monitor (Win10+)</span><span class="c">pktmon start --capture <span class="badge badge-cmd">CMD</span></span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="pktmon stop" data-desc="Stop pktmon"><span class="d">Stop pktmon</span><span class="c">pktmon stop <span class="badge badge-cmd">CMD</span></span><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="netsh trace start capture=yes" data-desc="Built-in trace"><div class="li-text"><span class="d">Built-in trace</span><span class="c">netsh trace start capture=yes <span class="badge badge-cmd">CMD</span></span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="netsh trace stop" data-desc="Stop & save trace"><div class="li-text"><span class="d">Stop & save trace</span><span class="c">netsh trace stop <span class="badge badge-cmd">CMD</span></span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="pktmon start --capture" data-desc="Packet monitor (Win10+)"><div class="li-text"><span class="d">Packet monitor (Win10+)</span><span class="c">pktmon start --capture <span class="badge badge-cmd">CMD</span></span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="pktmon stop" data-desc="Stop pktmon"><div class="li-text"><span class="d">Stop pktmon</span><span class="c">pktmon stop <span class="badge badge-cmd">CMD</span></span></div><span class="star" title="Favourite">☆</span></li>
     </ul>
   </div>
 </div>
@@ -870,64 +869,64 @@
   <div class="sec t-ssh" id="sec-ssh">
     <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">SSH Connection</span><span class="sec-toggle">▾</span></div>
     <ul class="cmds">
-      <li data-cmd="putty.exe -ssh user@host" data-desc="SSH to host as user"><span class="d">SSH to host as user</span><span class="c">putty.exe -ssh &lt;user&gt;@&lt;host&gt;</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="putty.exe -ssh -P port" data-desc="SSH on custom port"><span class="d">SSH on custom port</span><span class="c">putty.exe -ssh &lt;host&gt; -P &lt;port&gt;</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="putty.exe -load session" data-desc="Load saved session"><span class="d">Load saved session</span><span class="c">putty.exe -load "Session Name"</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="putty.exe -i key.ppk" data-desc="Auth with PPK key file"><span class="d">Auth with PPK key file</span><span class="c">putty.exe -ssh &lt;host&gt; -i key.ppk</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="putty.exe -v -ssh verbose" data-desc="Verbose SSH debug"><span class="d">Verbose SSH debug</span><span class="c">putty.exe -v -ssh &lt;host&gt;</span><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="putty.exe -ssh user@host" data-desc="SSH to host as user"><div class="li-text"><span class="d">SSH to host as user</span><span class="c">putty.exe -ssh &lt;user&gt;@&lt;host&gt;</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="putty.exe -ssh -P port" data-desc="SSH on custom port"><div class="li-text"><span class="d">SSH on custom port</span><span class="c">putty.exe -ssh &lt;host&gt; -P &lt;port&gt;</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="putty.exe -load session" data-desc="Load saved session"><div class="li-text"><span class="d">Load saved session</span><span class="c">putty.exe -load "Session Name"</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="putty.exe -i key.ppk" data-desc="Auth with PPK key file"><div class="li-text"><span class="d">Auth with PPK key file</span><span class="c">putty.exe -ssh &lt;host&gt; -i key.ppk</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="putty.exe -v -ssh verbose" data-desc="Verbose SSH debug"><div class="li-text"><span class="d">Verbose SSH debug</span><span class="c">putty.exe -v -ssh &lt;host&gt;</span></div><span class="star" title="Favourite">☆</span></li>
     </ul>
   </div>
   <div class="sec t-ssh">
     <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">Telnet / Serial</span><span class="sec-toggle">▾</span></div>
     <ul class="cmds">
-      <li data-cmd="putty.exe -telnet host" data-desc="Telnet connection"><span class="d">Telnet connection</span><span class="c">putty.exe -telnet &lt;host&gt;</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="putty.exe -serial COM3 9600" data-desc="Serial @ 9600 baud"><span class="d">Serial @ 9600 baud</span><span class="c">putty.exe -serial COM3 -sercfg 9600,8,n,1,N</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="putty.exe -serial COM3 115200" data-desc="Serial @ 115200 baud"><span class="d">Serial @ 115200 baud</span><span class="c">putty.exe -serial COM3 -sercfg 115200,8,n,1,N</span><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="putty.exe -telnet host" data-desc="Telnet connection"><div class="li-text"><span class="d">Telnet connection</span><span class="c">putty.exe -telnet &lt;host&gt;</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="putty.exe -serial COM3 9600" data-desc="Serial @ 9600 baud"><div class="li-text"><span class="d">Serial @ 9600 baud</span><span class="c">putty.exe -serial COM3 -sercfg 9600,8,n,1,N</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="putty.exe -serial COM3 115200" data-desc="Serial @ 115200 baud"><div class="li-text"><span class="d">Serial @ 115200 baud</span><span class="c">putty.exe -serial COM3 -sercfg 115200,8,n,1,N</span></div><span class="star" title="Favourite">☆</span></li>
     </ul>
   </div>
   <div class="sec t-conn">
     <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">Port Forwarding</span><span class="sec-toggle">▾</span></div>
     <ul class="cmds">
-      <li data-cmd="putty.exe -L local port forward" data-desc="Local port forward"><span class="d">Local port forward</span><span class="c">putty.exe -ssh &lt;host&gt; -L &lt;lp&gt;:&lt;rh&gt;:&lt;rp&gt;</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="putty.exe -R remote port forward" data-desc="Remote port forward"><span class="d">Remote port forward</span><span class="c">putty.exe -ssh &lt;host&gt; -R &lt;rp&gt;:localhost:&lt;lp&gt;</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="putty.exe -D socks5" data-desc="SOCKS5 dynamic proxy"><span class="d">SOCKS5 dynamic proxy</span><span class="c">putty.exe -ssh &lt;host&gt; -D &lt;port&gt;</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="putty.exe -N tunnel only" data-desc="Tunnel only, no shell"><span class="d">Tunnel only, no shell</span><span class="c">putty.exe -ssh &lt;host&gt; -N</span><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="putty.exe -L local port forward" data-desc="Local port forward"><div class="li-text"><span class="d">Local port forward</span><span class="c">putty.exe -ssh &lt;host&gt; -L &lt;lp&gt;:&lt;rh&gt;:&lt;rp&gt;</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="putty.exe -R remote port forward" data-desc="Remote port forward"><div class="li-text"><span class="d">Remote port forward</span><span class="c">putty.exe -ssh &lt;host&gt; -R &lt;rp&gt;:localhost:&lt;lp&gt;</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="putty.exe -D socks5" data-desc="SOCKS5 dynamic proxy"><div class="li-text"><span class="d">SOCKS5 dynamic proxy</span><span class="c">putty.exe -ssh &lt;host&gt; -D &lt;port&gt;</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="putty.exe -N tunnel only" data-desc="Tunnel only, no shell"><div class="li-text"><span class="d">Tunnel only, no shell</span><span class="c">putty.exe -ssh &lt;host&gt; -N</span></div><span class="star" title="Favourite">☆</span></li>
     </ul>
   </div>
   <div class="sec t-ssh">
     <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">PLINK — CLI SSH</span><span class="sec-toggle">▾</span></div>
     <ul class="cmds">
-      <li data-cmd="plink user@host" data-desc="Interactive SSH session"><span class="d">Interactive SSH session</span><span class="c">plink &lt;user&gt;@&lt;host&gt;</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="plink remote command" data-desc="Run single remote cmd"><span class="d">Run single remote cmd</span><span class="c">plink &lt;user&gt;@&lt;host&gt; "show ip route"</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="plink -batch -i key.ppk" data-desc="Non-interactive with key"><span class="d">Non-interactive with key</span><span class="c">plink -batch -i key.ppk &lt;host&gt; &lt;cmd&gt;</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="plink -ssh -P 22" data-desc="Specify SSH port"><span class="d">Specify SSH port</span><span class="c">plink -ssh -P 22 &lt;host&gt;</span><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="plink user@host" data-desc="Interactive SSH session"><div class="li-text"><span class="d">Interactive SSH session</span><span class="c">plink &lt;user&gt;@&lt;host&gt;</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="plink remote command" data-desc="Run single remote cmd"><div class="li-text"><span class="d">Run single remote cmd</span><span class="c">plink &lt;user&gt;@&lt;host&gt; "show ip route"</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="plink -batch -i key.ppk" data-desc="Non-interactive with key"><div class="li-text"><span class="d">Non-interactive with key</span><span class="c">plink -batch -i key.ppk &lt;host&gt; &lt;cmd&gt;</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="plink -ssh -P 22" data-desc="Specify SSH port"><div class="li-text"><span class="d">Specify SSH port</span><span class="c">plink -ssh -P 22 &lt;host&gt;</span></div><span class="star" title="Favourite">☆</span></li>
     </ul>
   </div>
   <div class="sec t-ssh">
     <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">PSCP / PSFTP</span><span class="sec-toggle">▾</span></div>
     <ul class="cmds">
-      <li data-cmd="pscp download file" data-desc="Download file via SCP"><span class="d">Download file via SCP</span><span class="c">pscp &lt;user&gt;@&lt;host&gt;:/remote/file .</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="pscp upload file" data-desc="Upload file via SCP"><span class="d">Upload file via SCP</span><span class="c">pscp localfile &lt;user&gt;@&lt;host&gt;:/path/</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="pscp -r recursive upload" data-desc="Recursive upload"><span class="d">Recursive upload</span><span class="c">pscp -r localdir &lt;user&gt;@&lt;host&gt;:/path/</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="psftp interactive session" data-desc="Interactive SFTP session"><span class="d">Interactive SFTP session</span><span class="c">psftp &lt;user&gt;@&lt;host&gt;</span><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="pscp download file" data-desc="Download file via SCP"><div class="li-text"><span class="d">Download file via SCP</span><span class="c">pscp &lt;user&gt;@&lt;host&gt;:/remote/file .</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="pscp upload file" data-desc="Upload file via SCP"><div class="li-text"><span class="d">Upload file via SCP</span><span class="c">pscp localfile &lt;user&gt;@&lt;host&gt;:/path/</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="pscp -r recursive upload" data-desc="Recursive upload"><div class="li-text"><span class="d">Recursive upload</span><span class="c">pscp -r localdir &lt;user&gt;@&lt;host&gt;:/path/</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="psftp interactive session" data-desc="Interactive SFTP session"><div class="li-text"><span class="d">Interactive SFTP session</span><span class="c">psftp &lt;user&gt;@&lt;host&gt;</span></div><span class="star" title="Favourite">☆</span></li>
     </ul>
   </div>
   <div class="sec t-ssh">
     <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">Key Management</span><span class="sec-toggle">▾</span></div>
     <ul class="cmds">
-      <li data-cmd="puttygen convert pem ppk" data-desc="Convert PEM to PPK"><span class="d">Convert PEM to PPK</span><span class="c">puttygen key.pem -o key.ppk</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="puttygen generate rsa 4096" data-desc="Generate 4096-bit RSA key"><span class="d">Generate 4096-bit RSA key</span><span class="c">puttygen -t rsa -b 4096 -o new.ppk</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="puttygen export openssh" data-desc="Export OpenSSH public key"><span class="d">Export OpenSSH public key</span><span class="c">puttygen key.ppk -O public-openssh</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="pageant load key agent" data-desc="Load key into SSH agent"><span class="d">Load key into SSH agent</span><span class="c">pageant key.ppk</span><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="puttygen convert pem ppk" data-desc="Convert PEM to PPK"><div class="li-text"><span class="d">Convert PEM to PPK</span><span class="c">puttygen key.pem -o key.ppk</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="puttygen generate rsa 4096" data-desc="Generate 4096-bit RSA key"><div class="li-text"><span class="d">Generate 4096-bit RSA key</span><span class="c">puttygen -t rsa -b 4096 -o new.ppk</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="puttygen export openssh" data-desc="Export OpenSSH public key"><div class="li-text"><span class="d">Export OpenSSH public key</span><span class="c">puttygen key.ppk -O public-openssh</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="pageant load key agent" data-desc="Load key into SSH agent"><div class="li-text"><span class="d">Load key into SSH agent</span><span class="c">pageant key.ppk</span></div><span class="star" title="Favourite">☆</span></li>
     </ul>
   </div>
   <div class="sec t-ssh">
     <div class="sec-label" onclick="toggleSec(this)"><span class="sec-label-left">Session & Logging</span><span class="sec-toggle">▾</span></div>
     <ul class="cmds">
-      <li data-cmd="putty.exe -load RouterA -l admin" data-desc="Session with user override"><span class="d">Session with user override</span><span class="c">putty.exe -load "RouterA" -l admin</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="putty.exe -logfile session log" data-desc="Log session to file"><span class="d">Log session to file</span><span class="c">putty.exe -logfile session.log -ssh &lt;host&gt;</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="putty.exe -sessionlog all" data-desc="Full session logging"><span class="d">Full session logging</span><span class="c">putty.exe -sessionlog all.log &lt;host&gt;</span><span class="star" title="Favourite">☆</span></li>
-      <li data-cmd="putty.exe -proxycmd plink jump host" data-desc="Jump host via plink"><span class="d">Jump host via plink</span><span class="c">putty.exe -proxycmd "plink -batch proxy %host %port" &lt;host&gt;</span><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="putty.exe -load RouterA -l admin" data-desc="Session with user override"><div class="li-text"><span class="d">Session with user override</span><span class="c">putty.exe -load "RouterA" -l admin</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="putty.exe -logfile session log" data-desc="Log session to file"><div class="li-text"><span class="d">Log session to file</span><span class="c">putty.exe -logfile session.log -ssh &lt;host&gt;</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="putty.exe -sessionlog all" data-desc="Full session logging"><div class="li-text"><span class="d">Full session logging</span><span class="c">putty.exe -sessionlog all.log &lt;host&gt;</span></div><span class="star" title="Favourite">☆</span></li>
+      <li data-cmd="putty.exe -proxycmd plink jump host" data-desc="Jump host via plink"><div class="li-text"><span class="d">Jump host via plink</span><span class="c">putty.exe -proxycmd "plink -batch proxy %host %port" &lt;host&gt;</span></div><span class="star" title="Favourite">☆</span></li>
     </ul>
   </div>
 </div>
@@ -1017,11 +1016,11 @@
     if (showingFavs) {
       applyFavouriteFilter();
     } else {
-      // clear filter
+      // clear filter — restore all rows and sections
       document.querySelectorAll('.col').forEach(col => {
         col.classList.remove('no-match');
         col.querySelectorAll('.sec').forEach(sec => {
-          sec.classList.remove('all-hidden');
+          sec.classList.remove('all-hidden', 'collapsed');
           sec.querySelectorAll('.cmds li').forEach(li => li.classList.remove('hidden'));
         });
       });
