@@ -208,16 +208,17 @@
   }
 
   .project-card.coming-soon .card-icon { height: 110px; }
+  .coming-soon-badge {
     display: inline-block;
     font-size: 10px;
     font-weight: 700;
     letter-spacing: 2px;
     text-transform: uppercase;
-    color: #f59e0b;
-    border: 1px solid rgba(245,158,11,0.4);
+    color: #7CFC00;
+    border: 1px solid rgba(124,252,0,0.4);
     padding: 3px 10px;
     border-radius: 2px;
-    background: rgba(245,158,11,0.08);
+    background: rgba(124,252,0,0.08);
     margin-bottom: 0.5rem;
   }
   .project-card.coming-soon {
@@ -226,25 +227,25 @@
   }
   .project-card.coming-soon:hover {
     transform: none;
-    border-color: rgba(245,158,11,0.3);
-    box-shadow: 0 8px 32px rgba(245,158,11,0.06), 0 2px 8px rgba(0,0,0,0.4);
+    border-color: rgba(124,252,0,0.3);
+    box-shadow: 0 8px 32px rgba(124,252,0,0.06), 0 2px 8px rgba(0,0,0,0.4);
   }
   .project-card.coming-soon::before {
-    background: linear-gradient(90deg, transparent, #f59e0b, transparent);
+    background: linear-gradient(90deg, transparent, #7CFC00, transparent);
   }
   .project-card.coming-soon .card-link {
-    color: #f59e0b;
+    color: #7CFC00;
     opacity: 0.6;
   }
   .project-card.coming-soon .card-arrow {
-    color: #f59e0b;
+    color: #7CFC00;
     opacity: 0.6;
   }
   .project-card.coming-soon .card-category {
-    color: #f59e0b;
+    color: #7CFC00;
   }
   .project-card.coming-soon .card-footer {
-    border-top-color: rgba(245,158,11,0.1);
+    border-top-color: rgba(124,252,0,0.1);
   }
 
   .brand-stack {
@@ -357,14 +358,14 @@
   }
   .project-card-wide::before {
     content:''; position:absolute; top:0; left:0; right:0; height:2px;
-    background:linear-gradient(90deg,transparent,#f59e0b,transparent);
+    background:linear-gradient(90deg,transparent,#7CFC00,transparent);
     opacity:0; transition:opacity 0.2s;
   }
-  .project-card-wide:hover { transform:translateY(-3px); border-color:rgba(245,158,11,0.4); box-shadow:0 8px 32px rgba(245,158,11,0.08); }
+  .project-card-wide:hover { transform:translateY(-3px); border-color:rgba(124,252,0,0.4); box-shadow:0 8px 32px rgba(124,252,0,0.08); }
   .project-card-wide:hover::before { opacity:1; }
   .project-card-wide .card-icon img { width:100%; height:180px; object-fit:cover; display:block; }
   .project-card-wide .card-body { padding:1.5rem; }
-  .project-card-wide .card-footer { padding:0.8rem 1.5rem; border-top:1px solid rgba(245,158,11,0.1); }
+  .project-card-wide .card-footer { padding:0.8rem 1.5rem; border-top:1px solid rgba(124,252,0,0.1); }
 
   .projects-quote {
     font-family: 'Rajdhani', sans-serif !important;
@@ -409,8 +410,8 @@
     font-size: 8px;
     font-weight: 700;
     letter-spacing: 1.5px;
-    color: #f59e0b;
-    border: 1px solid rgba(245,158,11,0.3);
+    color: #7CFC00;
+    border: 1px solid rgba(124,252,0,0.3);
     padding: 2px 6px;
     border-radius: 3px;
     text-transform: uppercase;
@@ -432,7 +433,7 @@
         <a href="port_clock.html">Port Clock</a>
       </div>
     </li>
-    <li><a href="#">SECURITY</a></li>
+    <li class="dropdown"><a href="#">SECURITY <span class="arrow"></span></a><div class="dropdown-menu"><a href="#" style="color:#7CFC00;cursor:default;">COMING SOON</a></div></li>
     <li class="dropdown"><a href="#">SYSTEMS <span class="arrow"></span></a><div class="dropdown-menu"><a href="powershell_reference.html">PowerShell Cmdlet Reference</a><a href="windows_diagnostics.html">Windows Diagnostics</a></div></li>
   </ul></div>
   <div class="nav-spacer"></div>
@@ -527,7 +528,7 @@
 
   <div class="section-header fade-in">
     <h2>Python Projects</h2>
-    <span class="coming-soon-badge" style="margin: 0;">Coming Soon</span>
+    <span class="coming-soon-badge" style="margin: 0;">COMING SOON</span>
     <div class="line"></div>
   </div>
 
